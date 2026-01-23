@@ -2,6 +2,7 @@ package com.cinesphere.main.service.impl;
 
 import org.springframework.beans.factory.annotation.Autowired;
 
+import com.cinesphere.main.customException.EmailAlreadyExistsException;
 import com.cinesphere.main.entity.User;
 import com.cinesphere.main.repository.UserRepository;
 import com.cinesphere.main.service.UserService;
@@ -10,10 +11,18 @@ public class UserServiceImpl implements UserService {
 
 	@Autowired
 	UserRepository userRepository;
-	
+
 	@Override
-	public User registerUser(User user) {
-		return null;
+	public User registerUser(User user) throws EmailAlreadyExistsException{
+		try {
+			if (userRepository.existsByEmail(user.getEmail())) {
+				throw new EmailAlreadyExistsException("Email already registered");
+			}
+		} catch (EmailAlreadyExistsException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+		return userRepository.save(user);
 	}
-	
+
 }
