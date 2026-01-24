@@ -1,32 +1,37 @@
 package com.cinesphere.main.service.impl;
 
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 
 import com.cinesphere.main.customException.EmailAlreadyExistsException;
+import com.cinesphere.main.dto.UserRegisterRequest;
 import com.cinesphere.main.entity.User;
 import com.cinesphere.main.repository.UserRepository;
 import com.cinesphere.main.service.UserService;
 
 public class UserServiceImpl implements UserService {
+	private final UserRepository userRepository;
+	private final BCryptPasswordEncoder encoder;
 
-	@Autowired
-	UserRepository userRepository;
-
-	@Autowired
-	BCryptPasswordEncoder encoder;
+	public UserServiceImpl(UserRepository userRepository, BCryptPasswordEncoder encoder) {
+		this.userRepository = userRepository;
+		this.encoder = encoder;
+	}
 
 	@Override
-	public User registerUser(User user) throws EmailAlreadyExistsException {
-		try {
-			if (userRepository.existsByEmail(user.getEmail())) {
-				throw new EmailAlreadyExistsException("Email already registered");
-			}
-		} catch (EmailAlreadyExistsException e) {
-			e.printStackTrace();
+	public void registerUser(UserRegisterRequest request) {
+
+		if (userRepository.existsByEmail(request.getEmail())) {
+			throw new EmailAlreadyExistsException("Email already registered");
 		}
-		user.setPassword(encoder.encode(user.getPassword()));
-		return userRepository.save(user);
+
+		User user = new User();
+		user.setName(request.getName());
+		user.setEmail(request.getEmail());
+		user.setPassword(encoder.encode(request.getPassword()));
+		user.setPhone(request.getPhone());
+
+		userRepository.save(user);
+
 	}
 
 }
