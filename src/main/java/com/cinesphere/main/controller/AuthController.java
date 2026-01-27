@@ -1,30 +1,45 @@
 package com.cinesphere.main.controller;
 
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
-
+import com.cinesphere.main.customException.GlobalExceptionHandler;
+import com.cinesphere.main.dto.LoginRequest;
+import com.cinesphere.main.dto.LoginResponse;
 import com.cinesphere.main.dto.UserRegisterRequest;
 import com.cinesphere.main.dto.UserRegisterResponse;
+import com.cinesphere.main.service.AuthService;
 import com.cinesphere.main.service.impl.UserServiceImpl;
 
 @RestController
 @RequestMapping("/api/auth")
 public class AuthController {
 
-	@GetMapping("test")
-	public String testApi() {
-		return "Ok";
-	}
+	@Autowired
+	private AuthService authService;
 
 	private final UserServiceImpl userService;
 
-	public AuthController(UserServiceImpl userService) {
+	public AuthController(UserServiceImpl userService, AuthenticationManager authenticationManager,
+			GlobalExceptionHandler globalExceptionHandler) {
 		this.userService = userService;
+	}
+
+	@PostMapping("/login")
+	public ResponseEntity<LoginResponse> login(LoginRequest request) {
+		System.out.println("Email : " + request.getEmail() + " Password : " + request.getPassword());
+		return ResponseEntity.ok(authService.login(request));
+	}
+
+	@GetMapping("/test")
+	public String testApi() {
+		return "Ok";
 	}
 
 	@PostMapping("/register")
