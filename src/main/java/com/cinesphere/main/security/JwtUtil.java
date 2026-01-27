@@ -4,6 +4,7 @@ import java.util.Date;
 
 import org.springframework.stereotype.Component;
 
+import io.jsonwebtoken.Claims;
 import io.jsonwebtoken.Jwts;
 import io.jsonwebtoken.SignatureAlgorithm;
 import io.jsonwebtoken.security.Keys;
@@ -20,8 +21,20 @@ public class JwtUtil {
 	}
 
 	public String extractEmail(String token) {
-		return Jwts.parserBuilder().setSigningKey(SECRET_KEY.getBytes()).build().parseClaimsJws(token).getBody()
-				.getSubject();
+		return getClaims(token).getSubject();
+	}
+
+	public boolean isTokenValid(String token) {
+		try {
+			getClaims(token);
+			return true;
+		} catch (Exception ex) {
+			return false;
+		}
+	}
+
+	public Claims getClaims(String token) {
+		return Jwts.parserBuilder().setSigningKey(SECRET_KEY.getBytes()).build().parseClaimsJws(token).getBody();
 	}
 
 }
