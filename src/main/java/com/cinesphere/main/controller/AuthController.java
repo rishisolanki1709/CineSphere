@@ -11,17 +11,17 @@ import com.cinesphere.main.dto.LoginRequest;
 import com.cinesphere.main.dto.LoginResponse;
 import com.cinesphere.main.dto.UserRegisterRequest;
 import com.cinesphere.main.dto.UserRegisterResponse;
-import com.cinesphere.main.service.AuthService;
+import com.cinesphere.main.service.impl.AuthServiceImpl;
 import com.cinesphere.main.service.impl.UserServiceImpl;
 
 @RestController
 @RequestMapping("/api/auth")
 public class AuthController {
 
-	private final AuthService authService;
+	private final AuthServiceImpl authService;
 	private final UserServiceImpl userService;
 
-	public AuthController(AuthService authService, UserServiceImpl userService) {
+	public AuthController(AuthServiceImpl authService, UserServiceImpl userService) {
 		this.authService = authService;
 		this.userService = userService;
 	}

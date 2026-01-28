@@ -1,4 +1,4 @@
-package com.cinesphere.main.customException;
+package com.cinesphere.main.exception;
 
 public class EmailAlreadyExistsException extends RuntimeException {
 
