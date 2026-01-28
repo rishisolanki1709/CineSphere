@@ -34,6 +34,9 @@ public class User {
 	@Column(nullable = false)
 	private LocalDateTime createdAt;
 
+	@Column(nullable = false)
+	private String role; // ROLE_USER, ROLE_ADMIN
+
 	@PrePersist
 	public void onCreate() {
 		this.createdAt = LocalDateTime.now();
@@ -85,5 +88,13 @@ public class User {
 
 	public void setCreatedAt(LocalDateTime createdAt) {
 		this.createdAt = createdAt;
+	}
+
+	public String getRole() {
+		return role;
+	}
+
+	public void setRole(String role) {
+		this.role = role;
 	}
 }
