@@ -6,32 +6,36 @@ import org.springframework.security.authentication.BadCredentialsException;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.RestControllerAdvice;
 
-import com.cinesphere.main.dto.ErrorResponse;
+import com.cinesphere.main.dto.ApiResponse;
+//import com.cinesphere.main.dto.ErrorResponse;
 
 @RestControllerAdvice
 public class GlobalExceptionHandler {
 
 	@ExceptionHandler(EmailAlreadyExistsException.class)
-	public ResponseEntity<ErrorResponse> handleEmailExists(EmailAlreadyExistsException ex) {
+	public ResponseEntity<ApiResponse<Void>> handleEmailExists(EmailAlreadyExistsException ex) {
 
-		ErrorResponse error = new ErrorResponse(HttpStatus.CONFLICT.value(), ex.getMessage());
+//		ErrorResponse error = new ErrorResponse(HttpStatus.CONFLICT.value(), ex.getMessage());
 
-		return ResponseEntity.status(HttpStatus.CONFLICT).body(error);
+		return ResponseEntity.status(HttpStatus.CONFLICT).body(new ApiResponse<>(false, ex.getMessage(), null));
+
 	}
 
 	@ExceptionHandler(BadCredentialsException.class)
-	public ResponseEntity<ErrorResponse> handleBadCredentials(BadCredentialsException ex) {
+	public ResponseEntity<ApiResponse<Void>> handleBadCredentials(BadCredentialsException ex) {
 
-		ErrorResponse error = new ErrorResponse(HttpStatus.UNAUTHORIZED.value(), "Invalid email or password");
+//		ErrorResponse error = new ErrorResponse(HttpStatus.UNAUTHORIZED.value(), "Invalid email or password");
 
-		return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body(error);
+		return ResponseEntity.status(HttpStatus.UNAUTHORIZED)
+				.body(new ApiResponse<>(true, "Invalid email or password", null));
 	}
 
 	@ExceptionHandler(Exception.class)
-	public ResponseEntity<ErrorResponse> handleGeneric(Exception ex) {
+	public ResponseEntity<ApiResponse<Void>> handleGeneric(Exception ex) {
 
-		ErrorResponse error = new ErrorResponse(HttpStatus.INTERNAL_SERVER_ERROR.value(), "Something went wrong");
+//		ErrorResponse error = new ErrorResponse(HttpStatus.INTERNAL_SERVER_ERROR.value(), "Something went wrong");
 
-		return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(error);
+		return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR)
+				.body(new ApiResponse<>(true, "Something went wrong", null));
 	}
 }

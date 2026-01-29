@@ -7,6 +7,8 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
+
+import com.cinesphere.main.dto.ApiResponse;
 import com.cinesphere.main.dto.LoginRequest;
 import com.cinesphere.main.dto.LoginResponse;
 import com.cinesphere.main.dto.UserRegisterRequest;
@@ -27,9 +29,11 @@ public class AuthController {
 	}
 
 	@PostMapping("/login")
-	public ResponseEntity<LoginResponse> login(LoginRequest request) {
+	public ResponseEntity<ApiResponse<LoginResponse>> login(LoginRequest request) {
 		System.out.println("Email : " + request.getEmail() + " Password : " + request.getPassword());
-		return ResponseEntity.ok(authService.login(request));
+		LoginResponse loginResponse = authService.login(request);
+
+		return ResponseEntity.ok(new ApiResponse<>(true, "Login successful", loginResponse));
 	}
 
 	@GetMapping("/test")
@@ -38,13 +42,14 @@ public class AuthController {
 	}
 
 	@PostMapping("/register")
-	public ResponseEntity<UserRegisterResponse> register(@RequestBody UserRegisterRequest request) {
+	public ResponseEntity<ApiResponse<UserRegisterResponse>> register(@RequestBody UserRegisterRequest request) {
 
 		userService.registerUser(request);
 
-		UserRegisterResponse response = new UserRegisterResponse();
-		response.setMessage("User registered successfully");
+//		UserRegisterResponse response = new UserRegisterResponse();
+//		response.setMessage("User registered successfully");
 
-		return ResponseEntity.status(HttpStatus.CREATED).body(response);
+		return ResponseEntity.status(HttpStatus.CREATED)
+				.body(new ApiResponse<>(true, "User registered successfully", null));
 	}
 }

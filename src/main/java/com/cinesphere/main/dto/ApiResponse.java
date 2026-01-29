@@ -2,23 +2,25 @@ package com.cinesphere.main.dto;
 
 import java.time.LocalDateTime;
 
-public class ErrorResponse {
-	private int status;
+public class ApiResponse<T> {
+	private boolean success;
 	private String message;
+	private T data;
 	private LocalDateTime timestamp;
 
-	public ErrorResponse(int status, String message) {
-		this.status = status;
+	public ApiResponse(boolean success, String message, T data) {
+		this.success = success;
 		this.message = message;
+		this.data = data;
 		this.timestamp = LocalDateTime.now();
 	}
 
-	public int getStatus() {
-		return status;
+	public boolean isSuccess() {
+		return success;
 	}
 
-	public void setStatus(int status) {
-		this.status = status;
+	public void setSuccess(boolean success) {
+		this.success = success;
 	}
 
 	public String getMessage() {
@@ -29,6 +31,14 @@ public class ErrorResponse {
 		this.message = message;
 	}
 
+	public T getData() {
+		return data;
+	}
+
+	public void setData(T data) {
+		this.data = data;
+	}
+
 	public LocalDateTime getTimestamp() {
 		return timestamp;
 	}
@@ -36,4 +46,5 @@ public class ErrorResponse {
 	public void setTimestamp(LocalDateTime timestamp) {
 		this.timestamp = timestamp;
 	}
+
 }
