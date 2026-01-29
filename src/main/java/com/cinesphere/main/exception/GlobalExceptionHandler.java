@@ -27,7 +27,7 @@ public class GlobalExceptionHandler {
 //		ErrorResponse error = new ErrorResponse(HttpStatus.UNAUTHORIZED.value(), "Invalid email or password");
 
 		return ResponseEntity.status(HttpStatus.UNAUTHORIZED)
-				.body(new ApiResponse<>(true, "Invalid email or password", null));
+				.body(new ApiResponse<>(false, "Invalid email or password", null));
 	}
 
 	@ExceptionHandler(Exception.class)
@@ -36,6 +36,6 @@ public class GlobalExceptionHandler {
 //		ErrorResponse error = new ErrorResponse(HttpStatus.INTERNAL_SERVER_ERROR.value(), "Something went wrong");
 
 		return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR)
-				.body(new ApiResponse<>(true, "Something went wrong", null));
+				.body(new ApiResponse<>(false, "Something went wrong", null));
 	}
 }
