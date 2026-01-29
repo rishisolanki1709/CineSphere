@@ -11,6 +11,7 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
+import com.cinesphere.main.dto.ApiResponse;
 import com.cinesphere.main.dto.ScreenResponseDTO;
 import com.cinesphere.main.entity.Screen;
 import com.cinesphere.main.service.ScreenService;
@@ -28,16 +29,19 @@ public class ScreenController {
 	// ADMIN only
 	@PostMapping("/{theatreId}")
 	@PreAuthorize("hasRole('ADMIN')")
-	public ResponseEntity<ScreenResponseDTO> addScreen(@PathVariable Long theatreId, @RequestBody Screen screen) {
+	public ResponseEntity<ApiResponse<ScreenResponseDTO>> addScreen(@PathVariable Long theatreId,
+			@RequestBody Screen screen) {
 
-		return ResponseEntity.ok(screenService.addScreen(theatreId, screen));
+		return ResponseEntity
+				.ok(new ApiResponse<>(true, "Screen Added Successful", screenService.addScreen(theatreId, screen)));
 	}
 
 	// USER + ADMIN
 	@GetMapping("/{theatreId}")
 	@PreAuthorize("hasAnyRole('USER', 'ADMIN')")
-	public ResponseEntity<List<ScreenResponseDTO>> getScreens(@PathVariable Long theatreId) {
+	public ResponseEntity<ApiResponse<List<ScreenResponseDTO>>> getScreens(@PathVariable Long theatreId) {
 
-		return ResponseEntity.ok(screenService.getScreensByTheatre(theatreId));
+		return ResponseEntity.ok(
+				new ApiResponse<>(true, "Screens fetched successfully", screenService.getScreensByTheatre(theatreId)));
 	}
 }
