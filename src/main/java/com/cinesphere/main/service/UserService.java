@@ -5,4 +5,6 @@ import com.cinesphere.main.exception.EmailAlreadyExistsException;
 
 public interface UserService {
 	void registerUser(UserRegisterRequest request) throws EmailAlreadyExistsException;
+
+	public void createAdmin(UserRegisterRequest request);
 }

@@ -35,4 +35,16 @@ public class UserServiceImpl implements UserService {
 
 		userRepository.save(user);
 	}
+
+	@Override
+	public void createAdmin(UserRegisterRequest request) {
+		User user = new User();
+		user.setName(request.getName());
+		user.setEmail(request.getEmail());
+		user.setPassword(encoder.encode(request.getPassword()));
+		user.setPhone(request.getPhone());
+		user.setRole("ROLE_ADMIN");
+
+		userRepository.save(user);
+	}
 }
