@@ -1,5 +1,8 @@
 package com.cinesphere.main.entity;
 
+import java.util.List;
+
+import jakarta.persistence.CascadeType;
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;
@@ -7,6 +10,7 @@ import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
 import jakarta.persistence.JoinColumn;
 import jakarta.persistence.ManyToOne;
+import jakarta.persistence.OneToMany;
 import jakarta.persistence.Table;
 
 @Entity
@@ -26,6 +30,9 @@ public class Screen {
 	@ManyToOne
 	@JoinColumn(name = "theatre_id", nullable = false)
 	private Theatre theatre;
+
+	@OneToMany(mappedBy = "screen", cascade = CascadeType.ALL)
+	private List<Seat> seats;
 
 	public Long getId() {
 		return id;
@@ -57,5 +64,13 @@ public class Screen {
 
 	public void setTheatre(Theatre theatre) {
 		this.theatre = theatre;
+	}
+
+	public List<Seat> getSeats() {
+		return seats;
+	}
+
+	public void setSeats(List<Seat> seats) {
+		this.seats = seats;
 	}
 }
