@@ -33,6 +33,10 @@ public class ShowSeat {
 	@Enumerated(EnumType.STRING)
 	private SeatStatus status;
 
+	@ManyToOne
+	@JoinColumn(name = "booking_id")
+	private Booking booking;
+
 	private LocalDateTime lockedAt;
 
 	public Long getId() {
@@ -73,6 +77,14 @@ public class ShowSeat {
 
 	public void setLockedAt(LocalDateTime lockedAt) {
 		this.lockedAt = lockedAt;
+	}
+
+	public Booking getBooking() {
+		return booking;
+	}
+
+	public void setBooking(Booking booking) {
+		this.booking = booking;
 	}
 
 }
