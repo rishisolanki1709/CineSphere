@@ -4,6 +4,7 @@ import java.util.List;
 
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
+import org.springframework.data.repository.query.Param;
 
 import com.cinesphere.main.entity.Show;
 
@@ -15,7 +16,8 @@ public interface ShowRepository extends JpaRepository<Show, Long> {
 			    SELECT s FROM Show s
 			    WHERE s.movie.id = :movieId
 			    AND s.screen.theatre.city = :city
-			    AND s.startDate > CURRENT_TIMESTAMP
+			    AND s.startTime > CURRENT_TIMESTAMP
 			""")
-	List<Show> findAvailableShows(Long movieId, String city);
+	List<Show> findAvailableShows(@Param("movieId") Long movieId, @Param("city") String city);
+
 }
