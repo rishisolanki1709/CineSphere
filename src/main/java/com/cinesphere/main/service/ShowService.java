@@ -3,6 +3,7 @@ package com.cinesphere.main.service;
 import java.util.List;
 
 import com.cinesphere.main.dto.ShowResponseDTO;
+import com.cinesphere.main.dto.ShowSeatResponseDTO;
 import com.cinesphere.main.entity.Show;
 
 public interface ShowService {
@@ -10,4 +11,8 @@ public interface ShowService {
 	ShowResponseDTO createShow(Long movieId, Long screenId, Show show);
 
 	List<ShowResponseDTO> getShowsByScreen(Long screenId);
+
+	List<ShowResponseDTO> getShows(Long movieId, String city);
+
+	List<ShowSeatResponseDTO> getShowSeats(Long showId);
 }

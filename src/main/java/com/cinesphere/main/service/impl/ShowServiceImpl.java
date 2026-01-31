@@ -5,6 +5,7 @@ import java.util.List;
 import org.springframework.stereotype.Service;
 
 import com.cinesphere.main.dto.ShowResponseDTO;
+import com.cinesphere.main.dto.ShowSeatResponseDTO;
 import com.cinesphere.main.entity.Movie;
 import com.cinesphere.main.entity.Screen;
 import com.cinesphere.main.entity.Seat;
@@ -84,5 +85,24 @@ public class ShowServiceImpl implements ShowService {
 		dto.setPrice(show.getPrice());
 
 		return dto;
+	}
+
+	@Override
+	public List<ShowResponseDTO> getShows(Long movieId, String city) {
+
+		return showRepository.findAvailableShows(movieId, city).stream().map(this::mapToDTO).toList();
+	}
+
+	@Override
+	public List<ShowSeatResponseDTO> getShowSeats(Long showId) {
+
+		return showSeatRepository.findByShowId(showId).stream().map(seat -> {
+			ShowSeatResponseDTO dto = new ShowSeatResponseDTO();
+			dto.setId(seat.getId());
+			dto.setSeatRow(seat.getSeat().getSeatRow());
+			dto.setSeatNumber(seat.getSeat().getSeatNumber());
+			dto.setStatus(seat.getStatus());
+			return dto;
+		}).toList();
 	}
 }

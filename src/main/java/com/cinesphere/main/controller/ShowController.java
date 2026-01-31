@@ -11,10 +11,12 @@ import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.cinesphere.main.dto.ApiResponse;
 import com.cinesphere.main.dto.ShowResponseDTO;
+import com.cinesphere.main.dto.ShowSeatResponseDTO;
 import com.cinesphere.main.entity.Show;
 import com.cinesphere.main.service.SeatLockService;
 import com.cinesphere.main.service.ShowService;
@@ -68,4 +70,22 @@ public class ShowController {
 		return ResponseEntity
 				.ok(new ApiResponse<>(true, "Shows fetched successfully", showService.getShowsByScreen(screenId)));
 	}
+
+	@GetMapping
+	@PreAuthorize("hasAnyRole('USER','ADMIN')")
+	public ResponseEntity<ApiResponse<List<ShowResponseDTO>>> getShows(@RequestParam Long movieId,
+			@RequestParam String city) {
+
+		return ResponseEntity
+				.ok(new ApiResponse<>(true, "Shows fetched successfully", showService.getShows(movieId, city)));
+	}
+
+	@GetMapping("/{showId}/seats")
+	@PreAuthorize("hasAnyRole('USER','ADMIN')")
+	public ResponseEntity<ApiResponse<List<ShowSeatResponseDTO>>> getShowSeats(@PathVariable Long showId) {
+
+		return ResponseEntity
+				.ok(new ApiResponse<>(true, "Seats fetched successfully", showService.getShowSeats(showId)));
+	}
+
 }
