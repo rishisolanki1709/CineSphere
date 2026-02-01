@@ -44,7 +44,6 @@ public class BookingServiceImpl implements BookinService {
 
 		List<ShowSeat> seats = showSeatRepository.findAllById(showSeatIds);
 
-		// 1️⃣ Validate lock
 		for (ShowSeat seat : seats) {
 			if (seat.getStatus() != SeatStatus.LOCKED) {
 				throw new RuntimeException("Seat not locked");
@@ -55,7 +54,6 @@ public class BookingServiceImpl implements BookinService {
 			}
 		}
 
-		// 2️⃣ Create booking
 		Booking booking = new Booking();
 		booking.setUser(user);
 		booking.setShow(show);
@@ -65,7 +63,6 @@ public class BookingServiceImpl implements BookinService {
 
 		Booking savedBooking = bookingRepository.save(booking);
 
-		// 3️⃣ Mark seats as BOOKED
 		for (ShowSeat seat : seats) {
 			seat.setStatus(SeatStatus.BOOKED);
 			seat.setBooking(savedBooking);

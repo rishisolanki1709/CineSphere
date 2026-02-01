@@ -54,7 +54,6 @@ public class ShowServiceImpl implements ShowService {
 			throw new RuntimeException("No seats found for this screen");
 		}
 
-		// 6️⃣ Create ShowSeat for each Seat
 		List<ShowSeat> showSeats = seats.stream().map(seat -> {
 			ShowSeat ss = new ShowSeat();
 			ss.setShow(savedShow);
@@ -64,7 +63,6 @@ public class ShowServiceImpl implements ShowService {
 			return ss;
 		}).toList();
 
-		// 7️⃣ Save all ShowSeats
 		showSeatRepository.saveAll(showSeats);
 		return mapToDTO(savedShow);
 	}

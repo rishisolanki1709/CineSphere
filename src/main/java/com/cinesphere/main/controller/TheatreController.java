@@ -27,6 +27,7 @@ public class TheatreController {
 	}
 
 	@PostMapping
+	@PreAuthorize("hasRole('ADMIN')")
 	public ResponseEntity<ApiResponse<TheatreResponseDTO>> addTheatre(@RequestBody Theatre theatre) {
 		TheatreResponseDTO dto = theatreService.addTheatre(theatre);
 		return ResponseEntity.ok(new ApiResponse<>(true, "Theatre added successfully", dto));

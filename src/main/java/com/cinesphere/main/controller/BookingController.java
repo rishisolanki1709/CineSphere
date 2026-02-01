@@ -7,11 +7,15 @@ import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RestController;
 
 import com.cinesphere.main.dto.ApiResponse;
 import com.cinesphere.main.dto.BookingRequestDTO;
 import com.cinesphere.main.service.BookinService;
 
+@RestController
+@RequestMapping("/api/bookings")
 public class BookingController {
 
 	private final BookinService bookingService;
@@ -20,14 +24,14 @@ public class BookingController {
 		this.bookingService = bookingService;
 	}
 
-	@PostMapping("/bookings/confirm")
+	@PostMapping("/confirm")
 	@PreAuthorize("hasRole('USER')")
 	public ResponseEntity<ApiResponse<String>> confirmBooking(@RequestBody BookingRequestDTO request,
 			Authentication authentication) {
 
 		bookingService.confirmBooking(request.getShowId(), request.getShowSeatIds(), authentication.getName());
 
-		return ResponseEntity.ok(new ApiResponse<>(true, "Booking confirmed", null));
+		return ResponseEntity.ok(new ApiResponse<>(true, "Booking confirmed successfully", null));
 	}
 
 	@DeleteMapping("/cancel/{bookingId}")
