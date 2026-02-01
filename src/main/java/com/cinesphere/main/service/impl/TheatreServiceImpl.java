@@ -38,4 +38,9 @@ public class TheatreServiceImpl implements TheatreService {
 		dto.setActive(theatre.isActive());
 		return dto;
 	}
+
+	@Override
+	public List<TheatreResponseDTO> getAllTheatres() {
+		return theatreRepository.findAll().stream().map(this::mapToDTO).toList();
+	}
 }

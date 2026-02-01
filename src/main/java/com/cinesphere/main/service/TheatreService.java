@@ -10,4 +10,6 @@ public interface TheatreService {
 
 	List<TheatreResponseDTO> getTheatresByCity(String city);
 
+	List<TheatreResponseDTO> getAllTheatres();
+
 }

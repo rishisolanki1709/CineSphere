@@ -30,13 +30,20 @@ public class TheatreController {
 	@PreAuthorize("hasRole('ADMIN')")
 	public ResponseEntity<ApiResponse<TheatreResponseDTO>> addTheatre(@RequestBody Theatre theatre) {
 		TheatreResponseDTO dto = theatreService.addTheatre(theatre);
-		return ResponseEntity.ok(new ApiResponse<>(true, "Theatre added successfully", dto));
+		return ResponseEntity.ok(new ApiResponse<>(true, "Theatre Added Successfully", dto));
 	}
 
 	@GetMapping("/{city}")
 	@PreAuthorize("hasAnyRole('USER', 'ADMIN')")
 	public ResponseEntity<ApiResponse<List<TheatreResponseDTO>>> getTheatres(@PathVariable String city) {
 		List<TheatreResponseDTO> dto = theatreService.getTheatresByCity(city);
-		return ResponseEntity.ok(new ApiResponse<>(true, "Theatres fetched successfully", dto));
+		return ResponseEntity.ok(new ApiResponse<>(true, "Theatres Fetched Successfully", dto));
+	}
+
+	@GetMapping
+	@PreAuthorize("hasAnyRole('USER', 'ADMIN')")
+	public ResponseEntity<ApiResponse<List<TheatreResponseDTO>>> getTheatres() {
+		List<TheatreResponseDTO> dto = theatreService.getAllTheatres();
+		return ResponseEntity.ok(new ApiResponse<>(true, "Theatres Fetched Successfully", dto));
 	}
 }

@@ -31,7 +31,7 @@ public class BookingController {
 
 		bookingService.confirmBooking(request.getShowId(), request.getShowSeatIds(), authentication.getName());
 
-		return ResponseEntity.ok(new ApiResponse<>(true, "Booking confirmed successfully", null));
+		return ResponseEntity.ok(new ApiResponse<>(true, "Booking Confirmed Successfully", null));
 	}
 
 	@DeleteMapping("/cancel/{bookingId}")
@@ -41,7 +41,7 @@ public class BookingController {
 
 		bookingService.cancelBooking(bookingId, authentication.getName());
 
-		return ResponseEntity.ok(new ApiResponse<>(true, "Booking cancelled successfully", null));
+		return ResponseEntity.ok(new ApiResponse<>(true, "Booking Cancelled Successfully", null));
 	}
 
 }

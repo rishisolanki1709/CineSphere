@@ -33,6 +33,6 @@ public class MovieController {
 	@PreAuthorize("hasAnyRole('USER', 'ADMIN')")
 	public ResponseEntity<ApiResponse<List<Movie>>> getMovies() {
 		return ResponseEntity
-				.ok(new ApiResponse<>(true, "Movies fetched successfully", movieService.getAllActiveMovies()));
+				.ok(new ApiResponse<>(true, "Movies Fetched Successfully", movieService.getAllActiveMovies()));
 	}
 }

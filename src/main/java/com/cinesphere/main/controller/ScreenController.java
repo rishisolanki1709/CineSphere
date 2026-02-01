@@ -33,7 +33,7 @@ public class ScreenController {
 			@RequestBody Screen screen) {
 
 		return ResponseEntity
-				.ok(new ApiResponse<>(true, "Screen Added Successful", screenService.addScreen(theatreId, screen)));
+				.ok(new ApiResponse<>(true, "Screen Added Successfully", screenService.addScreen(theatreId, screen)));
 	}
 
 	// USER + ADMIN
@@ -42,6 +42,6 @@ public class ScreenController {
 	public ResponseEntity<ApiResponse<List<ScreenResponseDTO>>> getScreens(@PathVariable Long theatreId) {
 
 		return ResponseEntity.ok(
-				new ApiResponse<>(true, "Screens fetched successfully", screenService.getScreensByTheatre(theatreId)));
+				new ApiResponse<>(true, "Screens Fetched Successfully", screenService.getScreensByTheatre(theatreId)));
 	}
 }

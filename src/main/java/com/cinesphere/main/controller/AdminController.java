@@ -12,6 +12,7 @@ import com.cinesphere.main.service.UserService;
 
 @RestController
 @RequestMapping("/api/admin")
+@PreAuthorize("hasRole('ADMIN')")
 public class AdminController {
 
 	private final UserService userService;
@@ -20,7 +21,6 @@ public class AdminController {
 		this.userService = userService;
 	}
 
-	@PreAuthorize("hasRole('ADMIN')")
 	@GetMapping("/dashboard")
 	public String adminDashboard() {
 		return "Admin Dashboard";
@@ -29,6 +29,6 @@ public class AdminController {
 	@PostMapping("/create-admin")
 	public String createAdmin(@RequestBody UserRegisterRequest request) {
 		userService.createAdmin(request);
-		return "Admin created successfully";
+		return "Admin Created Successfully";
 	}
 }

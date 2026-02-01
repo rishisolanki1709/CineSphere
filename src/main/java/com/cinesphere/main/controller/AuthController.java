@@ -33,7 +33,7 @@ public class AuthController {
 		System.out.println("Email : " + request.getEmail() + " Password : " + request.getPassword());
 		LoginResponse loginResponse = authService.login(request);
 
-		return ResponseEntity.ok(new ApiResponse<>(true, "Login successful", loginResponse));
+		return ResponseEntity.ok(new ApiResponse<>(true, "Login Successful", loginResponse));
 	}
 
 	@GetMapping("/test")
@@ -46,6 +46,6 @@ public class AuthController {
 
 		userService.registerUser(request);
 		return ResponseEntity.status(HttpStatus.CREATED)
-				.body(new ApiResponse<>(true, "User registered successfully", null));
+				.body(new ApiResponse<>(true, "User Rregistered Successfully", null));
 	}
 }

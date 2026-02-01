@@ -29,7 +29,7 @@ public class SeatController {
 	@PreAuthorize("hasRole('ADMIN')")
 	public ResponseEntity<ApiResponse<String>> createSeats(@PathVariable Long screenId) {
 		seatService.createSeatsForScreen(screenId);
-		return ResponseEntity.ok(new ApiResponse<>(true, "Seats created successfully", null));
+		return ResponseEntity.ok(new ApiResponse<>(true, "Seats Created Successfully", null));
 	}
 
 	// USER + ADMIN → view seats
@@ -37,6 +37,6 @@ public class SeatController {
 	@PreAuthorize("hasAnyRole('USER', 'ADMIN')")
 	public ResponseEntity<ApiResponse<List<SeatResponseDTO>>> getSeats(@PathVariable Long screenId) {
 		List<SeatResponseDTO> dto = seatService.getSeatsByScreen(screenId);
-		return ResponseEntity.ok(new ApiResponse<>(true, "Seats fetched successfully", dto));
+		return ResponseEntity.ok(new ApiResponse<>(true, "Seats Fetched Successfully", dto));
 	}
 }

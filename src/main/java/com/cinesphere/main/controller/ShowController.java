@@ -13,6 +13,7 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.cinesphere.main.dto.ApiResponse;
+import com.cinesphere.main.dto.LockSeatDTO;
 import com.cinesphere.main.dto.ShowResponseDTO;
 import com.cinesphere.main.dto.ShowSeatResponseDTO;
 import com.cinesphere.main.entity.Show;
@@ -38,15 +39,14 @@ public class ShowController {
 			@PathVariable Long screenId, @RequestBody Show show) {
 
 		return ResponseEntity.ok(
-				new ApiResponse<>(true, "Show created successfully", showService.createShow(movieId, screenId, show)));
+				new ApiResponse<>(true, "Show Created Successfully", showService.createShow(movieId, screenId, show)));
 	}
 
-	@PostMapping("/{showId}/lock-seats")
+	@PostMapping("/lock-seats")
 	@PreAuthorize("hasRole('USER')")
-	public ResponseEntity<ApiResponse<String>> lockSeats(@PathVariable Long showId,
-			@RequestBody List<Long> showSeatIds) {
-		lockService.lockSeats(showId, showSeatIds);
-		return ResponseEntity.ok(new ApiResponse<>(true, "Seats locked for 5 minutes", null));
+	public ResponseEntity<ApiResponse<String>> lockSeats(@RequestBody LockSeatDTO lockSeatDTO) {
+		lockService.lockSeats(lockSeatDTO.getShowId(), lockSeatDTO.getShowSeatIds());
+		return ResponseEntity.ok(new ApiResponse<>(true, "Seats Locked For 5 Minutes", null));
 	}
 
 	// USER + ADMIN → view shows
@@ -55,23 +55,22 @@ public class ShowController {
 	public ResponseEntity<ApiResponse<List<ShowResponseDTO>>> getShows(@PathVariable Long screenId) {
 
 		return ResponseEntity
-				.ok(new ApiResponse<>(true, "Shows fetched successfully", showService.getShowsByScreen(screenId)));
+				.ok(new ApiResponse<>(true, "Shows Fetched Successfully", showService.getShowsByScreen(screenId)));
 	}
 
 	@GetMapping
 	@PreAuthorize("hasAnyRole('USER','ADMIN')")
 	public ResponseEntity<ApiResponse<List<ShowResponseDTO>>> getShows(@RequestParam Long movieId,
 			@RequestParam String city) {
-
 		return ResponseEntity
-				.ok(new ApiResponse<>(true, "Shows fetched successfully", showService.getShows(movieId, city)));
+				.ok(new ApiResponse<>(true, "Shows Fetched Successfully", showService.getShows(movieId, city)));
 	}
 
 	@GetMapping("/{showId}/seats")
 	@PreAuthorize("hasAnyRole('USER','ADMIN')")
 	public ResponseEntity<ApiResponse<List<ShowSeatResponseDTO>>> getShowSeats(@PathVariable Long showId) {
 		return ResponseEntity
-				.ok(new ApiResponse<>(true, "Seats fetched successfully", showService.getShowSeats(showId)));
+				.ok(new ApiResponse<>(true, "Seats Fetched Successfully", showService.getShowSeats(showId)));
 	}
 
 }
