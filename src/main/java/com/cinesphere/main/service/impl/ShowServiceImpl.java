@@ -1,5 +1,6 @@
 package com.cinesphere.main.service.impl;
 
+import java.util.ArrayList;
 import java.util.List;
 
 import org.springframework.stereotype.Service;
@@ -39,38 +40,49 @@ public class ShowServiceImpl implements ShowService {
 	@Override
 	@Transactional
 	public ShowResponseDTO createShow(Long movieId, Long screenId, Show show) {
+
 		Movie movie = movieRepository.findById(movieId).orElseThrow(() -> new RuntimeException("Movie not found"));
 
-		Screen screen = screenRepository.findById(screenId).orElseThrow(() -> new RuntimeException("Screen not found"));
+		// Lock screen (prevents concurrent overlapping shows)
+		Screen screen = screenRepository.lockScreen(screenId).orElseThrow("Screen not found");
 
-		// 🔥 OVERLAP CHECK
+		// Overlap check
 		List<Show> overlappingShows = showRepository.findOverlappingShows(screenId, show.getStartTime(),
 				show.getEndTime());
 
 		if (!overlappingShows.isEmpty()) {
 			throw new RuntimeException("Show time overlaps with an existing show on this screen");
 		}
+
 		show.setMovie(movie);
 		show.setScreen(screen);
 
+		// Save show first
 		Show savedShow = showRepository.save(show);
 
 		List<Seat> seats = screen.getSeats();
-
 		if (seats == null || seats.isEmpty()) {
 			throw new RuntimeException("No seats found for this screen");
 		}
 
-		List<ShowSeat> showSeats = seats.stream().map(seat -> {
+		// Create show seats
+		List<ShowSeat> showSeats = new ArrayList<>();
+
+		for (Seat seat : seats) {
 			ShowSeat ss = new ShowSeat();
 			ss.setShow(savedShow);
 			ss.setSeat(seat);
 			ss.setStatus(SeatStatus.AVAILABLE);
 			ss.setLockedAt(null);
-			return ss;
-		}).toList();
+			showSeats.add(ss);
+		}
 
-		showSeatRepository.saveAll(showSeats);
+		// Attach to parent (🔥 MOST IMPORTANT)
+		savedShow.setShowSeats(showSeats);
+
+		// Save ONLY parent (cascade handles children)
+		showRepository.save(savedShow);
+
 		return mapToDTO(savedShow);
 	}
 

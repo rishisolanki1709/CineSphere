@@ -28,7 +28,7 @@ public class Booking {
 	@ManyToOne
 	private Show show;
 
-	@OneToMany
+	@OneToMany(mappedBy = "booking")
 	private List<ShowSeat> showSeats;
 
 	@Enumerated(EnumType.STRING)

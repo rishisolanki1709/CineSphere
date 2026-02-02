@@ -31,7 +31,7 @@ public class Theatre {
 	@Column(nullable = false)
 	private boolean active = true;
 
-	@OneToMany(mappedBy = "theatre", cascade = CascadeType.ALL)
+	@OneToMany(mappedBy = "theatre", cascade = CascadeType.ALL, orphanRemoval = true)
 	private List<Screen> screens;
 
 	public Long getId() {

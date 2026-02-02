@@ -31,7 +31,7 @@ public class Screen {
 	@JoinColumn(name = "theatre_id", nullable = false)
 	private Theatre theatre;
 
-	@OneToMany(mappedBy = "screen", cascade = CascadeType.ALL)
+	@OneToMany(mappedBy = "screen", cascade = CascadeType.ALL, orphanRemoval = true)
 	private List<Seat> seats;
 
 	public Long getId() {
@@ -72,5 +72,9 @@ public class Screen {
 
 	public void setSeats(List<Seat> seats) {
 		this.seats = seats;
+	}
+
+	public Screen orElseThrow(String e) {
+		throw new RuntimeException(e);
 	}
 }

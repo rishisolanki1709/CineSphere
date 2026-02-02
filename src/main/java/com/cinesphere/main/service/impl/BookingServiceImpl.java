@@ -102,6 +102,9 @@ public class BookingServiceImpl implements BookinService {
 		List<ShowSeat> seats = showSeatRepository.findByBookingId(bookingId);
 
 		for (ShowSeat seat : seats) {
+			if (seat.getStatus() != SeatStatus.BOOKED) {
+				throw new RuntimeException("Seat State Invalid For Cancellation");
+			}
 			seat.setStatus(SeatStatus.AVAILABLE);
 			seat.setBooking(null);
 			seat.setLockedAt(null);

@@ -30,9 +30,12 @@ public class SeatAutoReleaseScheduler {
 			return;
 		for (ShowSeat seat : expiredSeats) {
 			System.out.println("Free Seats");
-			seat.setStatus(SeatStatus.AVAILABLE);
-			seat.setLockedAt(null);
-			seat.setBooking(null);
+			if (seat.getStatus() == SeatStatus.LOCKED
+					&& seat.getLockedAt().plusMinutes(5).isBefore(LocalDateTime.now())) {
+				seat.setStatus(SeatStatus.AVAILABLE);
+				seat.setLockedAt(null);
+				seat.setBooking(null);
+			}
 		}
 		showSeatRepository.saveAll(expiredSeats);
 	}
