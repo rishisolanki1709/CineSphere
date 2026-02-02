@@ -1,5 +1,6 @@
 package com.cinesphere.main.repository;
 
+import java.time.LocalDateTime;
 import java.util.List;
 
 import org.springframework.data.jpa.repository.JpaRepository;
@@ -20,4 +21,12 @@ public interface ShowRepository extends JpaRepository<Show, Long> {
 			""")
 	List<Show> findAvailableShows(@Param("movieId") Long movieId, @Param("city") String city);
 
+	@Query("""
+			    SELECT s FROM Show s
+			    WHERE s.screen.id = :screenId
+			    AND :startTime < s.endTime
+			    AND :endTime > s.startTime
+			""")
+	List<Show> findOverlappingShows(@Param("screenId") Long screenId, @Param("startTime") LocalDateTime startTime,
+			@Param("endTime") LocalDateTime endTime);
 }

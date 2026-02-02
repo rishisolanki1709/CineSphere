@@ -43,6 +43,13 @@ public class ShowServiceImpl implements ShowService {
 
 		Screen screen = screenRepository.findById(screenId).orElseThrow(() -> new RuntimeException("Screen not found"));
 
+		// 🔥 OVERLAP CHECK
+		List<Show> overlappingShows = showRepository.findOverlappingShows(screenId, show.getStartTime(),
+				show.getEndTime());
+
+		if (!overlappingShows.isEmpty()) {
+			throw new RuntimeException("Show time overlaps with an existing show on this screen");
+		}
 		show.setMovie(movie);
 		show.setScreen(screen);
 
