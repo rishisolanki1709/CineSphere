@@ -9,13 +9,18 @@ import jakarta.persistence.FetchType;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
+import jakarta.persistence.Index;
 import jakarta.persistence.JoinColumn;
 import jakarta.persistence.ManyToOne;
 import jakarta.persistence.Table;
 import jakarta.persistence.UniqueConstraint;
 
 @Entity
-@Table(name = "show_seats", uniqueConstraints = @UniqueConstraint(columnNames = { "show_id", "seat_id" }))
+@Table(name = "show_seats", uniqueConstraints = @UniqueConstraint(columnNames = { "show_id", "seat_id" }), indexes = {
+		@Index(name = "idx_show_seat_show", columnList = "show_id"),
+		@Index(name = "idx_show_seat_status", columnList = "status"),
+		@Index(name = "idx_show_seat_locked_at", columnList = "locked_at"),
+		@Index(name = "idx_show_seat_show_status", columnList = "show_id, status") })
 public class ShowSeat {
 
 	@Id
