@@ -12,6 +12,7 @@ import org.springframework.web.bind.annotation.RestController;
 
 import com.cinesphere.main.dto.ApiResponse;
 import com.cinesphere.main.dto.BookingRequestDTO;
+import com.cinesphere.main.dto.BookingResponseDTO;
 import com.cinesphere.main.service.BookinService;
 
 @RestController
@@ -26,12 +27,13 @@ public class BookingController {
 
 	@PostMapping("/confirm")
 	@PreAuthorize("hasRole('USER')")
-	public ResponseEntity<ApiResponse<String>> confirmBooking(@RequestBody BookingRequestDTO request,
+	public ResponseEntity<ApiResponse<BookingResponseDTO>> confirmBooking(@RequestBody BookingRequestDTO request,
 			Authentication authentication) {
 
-		bookingService.confirmBooking(request.getShowId(), request.getShowSeatIds(), authentication.getName());
+		BookingResponseDTO dto = bookingService.confirmBooking(request.getShowId(), request.getShowSeatIds(),
+				authentication.getName());
 
-		return ResponseEntity.ok(new ApiResponse<>(true, "Booking Confirmed Successfully", null));
+		return ResponseEntity.ok(new ApiResponse<>(true, "Booking Confirmed Successfully", dto));
 	}
 
 	@DeleteMapping("/cancel/{bookingId}")

@@ -5,6 +5,7 @@ import java.util.List;
 
 import org.springframework.stereotype.Service;
 
+import com.cinesphere.main.dto.BookingResponseDTO;
 import com.cinesphere.main.entity.Booking;
 import com.cinesphere.main.entity.BookingStatus;
 import com.cinesphere.main.entity.SeatStatus;
@@ -36,21 +37,20 @@ public class BookingServiceImpl implements BookinService {
 	}
 
 	@Transactional
-	public void confirmBooking(Long showId, List<Long> showSeatIds, String email) {
+	public BookingResponseDTO confirmBooking(Long showId, List<Long> showSeatIds, String email) {
 
-		User user = userRepository.findByEmail(email).orElseThrow(() -> new RuntimeException("User not found"));
+		User user = userRepository.findByEmail(email).orElseThrow(() -> new RuntimeException("User Not Found"));
 
-		Show show = showRepository.findById(showId).orElseThrow(() -> new RuntimeException("Show not found"));
+		Show show = showRepository.findById(showId).orElseThrow(() -> new RuntimeException("Show Not Found"));
 
 		List<ShowSeat> seats = showSeatRepository.findAllById(showSeatIds);
 
 		for (ShowSeat seat : seats) {
 			if (seat.getStatus() != SeatStatus.LOCKED) {
-				throw new RuntimeException("Seat not locked");
+				throw new RuntimeException("Seat Not Locked");
 			}
-
 			if (seat.getLockedAt().plusMinutes(5).isBefore(LocalDateTime.now())) {
-				throw new RuntimeException("Seat lock expired");
+				throw new RuntimeException("Seat Lock Expired");
 			}
 		}
 
@@ -68,30 +68,35 @@ public class BookingServiceImpl implements BookinService {
 			seat.setBooking(savedBooking);
 			seat.setLockedAt(null);
 		}
-
 		showSeatRepository.saveAll(seats);
-
-		savedBooking.setShowSeats(seats);
+		BookingResponseDTO dto = new BookingResponseDTO();
+		dto.setBookingId(booking.getId());
+		dto.setShowId(booking.getShow().getId());
+		dto.setStatus(booking.getStatus());
+		dto.setTotalAmount(booking.getTotalAmount());
+		dto.setSeats(seats.stream().map(ss -> ss.getSeat().getSeatRow() + ss.getSeat().getSeatNumber()).toList());
+		return dto;
 	}
 
 	@Transactional
 	public void cancelBooking(Long bookingId, String email) {
 
 		Booking booking = bookingRepository.findById(bookingId)
-				.orElseThrow(() -> new RuntimeException("Booking not found"));
+				.orElseThrow(() -> new RuntimeException("Booking Not Found"));
 
-		// 1️⃣ Check ownership
 		if (!booking.getUser().getEmail().equals(email)) {
-			throw new RuntimeException("Unauthorized cancellation");
+			throw new RuntimeException("Unauthorized Cancellation");
 		}
 
-		// 2️⃣ Check status
+		if (booking.getStatus() == BookingStatus.CANCELLED) {
+			throw new RuntimeException("Booking Already Cancelled");
+		}
+
 		if (booking.getStatus() != BookingStatus.CONFIRMED) {
-			throw new RuntimeException("Booking cannot be cancelled");
+			throw new RuntimeException("Booking Cannot Be Cancelled");
 		}
 
-		// 3️⃣ Release seats
-		List<ShowSeat> seats = booking.getShowSeats();
+		List<ShowSeat> seats = showSeatRepository.findByBookingId(bookingId);
 
 		for (ShowSeat seat : seats) {
 			seat.setStatus(SeatStatus.AVAILABLE);
@@ -101,7 +106,6 @@ public class BookingServiceImpl implements BookinService {
 
 		showSeatRepository.saveAll(seats);
 
-		// 4️⃣ Update booking
 		booking.setStatus(BookingStatus.CANCELLED);
 		bookingRepository.save(booking);
 	}
