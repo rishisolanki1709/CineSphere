@@ -49,6 +49,9 @@ public class BookingServiceImpl implements BookinService {
 			if (seat.getStatus() != SeatStatus.LOCKED) {
 				throw new RuntimeException("Seat Not Locked");
 			}
+			if (seat.getStatus() == SeatStatus.BOOKED) {
+				throw new RuntimeException("Seat already booked");
+			}
 			if (seat.getLockedAt().plusMinutes(5).isBefore(LocalDateTime.now())) {
 				throw new RuntimeException("Seat Lock Expired");
 			}
