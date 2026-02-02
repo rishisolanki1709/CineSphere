@@ -6,6 +6,7 @@ import java.util.List;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Lock;
 import org.springframework.data.jpa.repository.Query;
+import org.springframework.data.repository.query.Param;
 
 import com.cinesphere.main.entity.SeatStatus;
 import com.cinesphere.main.entity.ShowSeat;
@@ -22,7 +23,7 @@ public interface ShowSeatRepository extends JpaRepository<ShowSeat, Long> {
 			   AND ss.seat.id IN :seatIds
 			   AND ss.status = 'AVAILABLE'
 			""")
-	List<ShowSeat> lockSeats(Long showId, List<Long> seatIds);
+	List<ShowSeat> lockSeats(@Param("showId") Long showId, @Param("seatIds") List<Long> seatIds);
 
 	List<ShowSeat> findByBookingId(Long bookingId);
 
