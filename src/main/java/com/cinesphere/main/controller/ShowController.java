@@ -45,7 +45,8 @@ public class ShowController {
 	@PostMapping("/lock-seats")
 	@PreAuthorize("hasRole('USER')")
 	public ResponseEntity<ApiResponse<String>> lockSeats(@RequestBody LockSeatDTO lockSeatDTO) {
-		lockService.lockSeats(lockSeatDTO.getShowId(), lockSeatDTO.getShowSeatIds());
+		lockService.lockSeats(lockSeatDTO.getShowId(), lockSeatDTO.getShowSeatIds(),
+				lockSeatDTO.getAuthentication().getName());
 		return ResponseEntity.ok(new ApiResponse<>(true, "Seats Locked For 5 Minutes", null));
 	}
 

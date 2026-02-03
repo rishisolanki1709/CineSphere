@@ -19,13 +19,18 @@ public class SeatLockServiceImpl implements SeatLockService {
 
 	private final ShowSeatRepository showSeatRepository;
 
-	public SeatLockServiceImpl(ShowSeatRepository showSeatRepository) {
+	private final SeatLockRateLimiter rateLimiter;
+
+	public SeatLockServiceImpl(ShowSeatRepository showSeatRepository, SeatLockRateLimiter rateLimiter) {
 		this.showSeatRepository = showSeatRepository;
+		this.rateLimiter = rateLimiter;
 	}
 
 	@Override
 	@Transactional
-	public void lockSeats(Long showId, List<Long> showSeatIds) {
+	public void lockSeats(Long showId, List<Long> showSeatIds, String email) {
+
+		rateLimiter.validate(email, showId);
 
 		List<ShowSeat> seats = showSeatRepository.findAllById(showSeatIds);
 
