@@ -4,6 +4,7 @@ import java.util.List;
 
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
+import org.springframework.security.core.Authentication;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -44,9 +45,9 @@ public class ShowController {
 
 	@PostMapping("/lock-seats")
 	@PreAuthorize("hasRole('USER')")
-	public ResponseEntity<ApiResponse<String>> lockSeats(@RequestBody LockSeatDTO lockSeatDTO) {
-		lockService.lockSeats(lockSeatDTO.getShowId(), lockSeatDTO.getShowSeatIds(),
-				lockSeatDTO.getAuthentication().getName());
+	public ResponseEntity<ApiResponse<String>> lockSeats(@RequestBody LockSeatDTO lockSeatDTO,
+			Authentication authentication) {
+		lockService.lockSeats(lockSeatDTO.getShowId(), lockSeatDTO.getShowSeatIds(), authentication.getName());
 		return ResponseEntity.ok(new ApiResponse<>(true, "Seats Locked For 5 Minutes", null));
 	}
 

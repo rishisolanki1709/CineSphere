@@ -36,12 +36,10 @@ public class SeatLockServiceImpl implements SeatLockService {
 
 		for (ShowSeat seat : seats) {
 
-			// ❌ Already booked
 			if (seat.getStatus() == SeatStatus.BOOKED) {
 				throw new RuntimeException("Seat Already Booked");
 			}
 
-			// ❌ Locked but not expired
 			if (seat.getStatus() == SeatStatus.LOCKED && !isLockExpired(seat.getLockedAt())) {
 				throw new RuntimeException("Seat Temporarily Locked");
 			}
