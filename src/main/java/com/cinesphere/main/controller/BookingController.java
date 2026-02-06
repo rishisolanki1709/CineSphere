@@ -45,5 +45,4 @@ public class BookingController {
 
 		return ResponseEntity.ok(new ApiResponse<>(true, "Booking Cancelled Successfully", null));
 	}
-
 }

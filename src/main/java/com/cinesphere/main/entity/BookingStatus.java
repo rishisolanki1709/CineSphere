@@ -1,5 +1,5 @@
 package com.cinesphere.main.entity;
 
 public enum BookingStatus {
-	PENDING, CONFIRMED, CANCELLED
+	PENDING_PAYMENT, CONFIRMED, CANCELLED, PAYMENT_FAILED, REFUNDED
 }

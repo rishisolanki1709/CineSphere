@@ -115,5 +115,4 @@ public class BookingServiceImpl implements BookinService {
 		booking.setStatus(BookingStatus.CANCELLED);
 		bookingRepository.save(booking);
 	}
-
 }

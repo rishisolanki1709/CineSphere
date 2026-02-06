@@ -32,11 +32,16 @@ public class PaymentServiceImpl implements PaymentService {
 		this.showSeatRepository = showSeatRepository;
 	}
 
+	@Override
 	@Transactional
 	public void processMockPayment(MockPaymentRequestDTO request) {
 
 		Booking booking = bookingRepository.findById(request.getBookingId())
-				.orElseThrow(() -> new RuntimeException("Booking not found"));
+				.orElseThrow(() -> new RuntimeException("Booking Not Found"));
+
+		if (booking.getStatus() == BookingStatus.CONFIRMED) {
+			throw new RuntimeException("Booking Already Paid");
+		}
 
 		Payment payment = new Payment();
 		payment.setBooking(booking);
@@ -45,7 +50,6 @@ public class PaymentServiceImpl implements PaymentService {
 		payment.setCreatedAt(LocalDateTime.now());
 
 		if (request.getSuccess()) {
-			// ✅ Payment Success
 			payment.setStatus(PaymentStatus.SUCCESS);
 			booking.setStatus(BookingStatus.CONFIRMED);
 
@@ -58,17 +62,36 @@ public class PaymentServiceImpl implements PaymentService {
 		} else {
 			payment.setStatus(PaymentStatus.FAILED);
 			booking.setStatus(BookingStatus.CANCELLED);
-
-			for (ShowSeat seat : booking.getShowSeats()) {
-				seat.setStatus(SeatStatus.AVAILABLE);
-				seat.setLockedAt(null);
-				seat.setBooking(null);
-			}
-
-			showSeatRepository.saveAll(booking.getShowSeats());
 		}
 
 		paymentRepository.save(payment);
+		bookingRepository.save(booking);
+	}
+
+	@Override
+	@Transactional
+	public void refundBooking(Long bookingId, String email) {
+
+		Booking booking = bookingRepository.findById(bookingId)
+				.orElseThrow(() -> new RuntimeException("Booking not found"));
+
+		if (!booking.getUser().getEmail().equals(email)) {
+			throw new RuntimeException("Unauthorized");
+		}
+
+		if (booking.getStatus() != BookingStatus.CONFIRMED) {
+			throw new RuntimeException("Refund not allowed");
+		}
+
+		// Release seats
+		for (ShowSeat seat : booking.getShowSeats()) {
+			seat.setStatus(SeatStatus.AVAILABLE);
+			seat.setBooking(null);
+		}
+
+		showSeatRepository.saveAll(booking.getShowSeats());
+
+		booking.setStatus(BookingStatus.REFUNDED);
 		bookingRepository.save(booking);
 	}
 }
