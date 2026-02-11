@@ -51,7 +51,6 @@ public class ShowController {
 		return ResponseEntity.ok(new ApiResponse<>(true, "Seats Locked For 5 Minutes", null));
 	}
 
-	// USER + ADMIN → view shows
 	@GetMapping("/screen/{screenId}")
 	@PreAuthorize("hasAnyRole('USER', 'ADMIN')")
 	public ResponseEntity<ApiResponse<List<ShowResponseDTO>>> getShows(@PathVariable Long screenId) {

@@ -36,6 +36,7 @@ public class BookingServiceImpl implements BookinService {
 		this.bookingRepository = bookingRepository;
 	}
 
+	@Override
 	@Transactional
 	public BookingResponseDTO confirmBooking(Long showId, List<Long> showSeatIds, String email) {
 
@@ -49,9 +50,7 @@ public class BookingServiceImpl implements BookinService {
 			if (seat.getStatus() != SeatStatus.LOCKED) {
 				throw new RuntimeException("Seat Not Locked");
 			}
-			if (seat.getStatus() == SeatStatus.BOOKED) {
-				throw new RuntimeException("Seat already booked");
-			}
+
 			if (seat.getLockedAt().plusMinutes(5).isBefore(LocalDateTime.now())) {
 				throw new RuntimeException("Seat Lock Expired");
 			}
@@ -60,27 +59,27 @@ public class BookingServiceImpl implements BookinService {
 		Booking booking = new Booking();
 		booking.setUser(user);
 		booking.setShow(show);
-		booking.setStatus(BookingStatus.CONFIRMED);
+		booking.setStatus(BookingStatus.PENDING_PAYMENT);
 		booking.setTotalAmount(seats.size() * show.getPrice());
 		booking.setBookedAt(LocalDateTime.now());
 
 		Booking savedBooking = bookingRepository.save(booking);
 
 		for (ShowSeat seat : seats) {
-			seat.setStatus(SeatStatus.BOOKED);
 			seat.setBooking(savedBooking);
-			seat.setLockedAt(null);
 		}
+
 		showSeatRepository.saveAll(seats);
+
 		BookingResponseDTO dto = new BookingResponseDTO();
-		dto.setBookingId(booking.getId());
-		dto.setShowId(booking.getShow().getId());
-		dto.setStatus(booking.getStatus());
-		dto.setTotalAmount(booking.getTotalAmount());
-		dto.setSeats(seats.stream().map(ss -> ss.getSeat().getSeatRow() + ss.getSeat().getSeatNumber()).toList());
+		dto.setBookingId(savedBooking.getId());
+		dto.setStatus(savedBooking.getStatus());
+		dto.setTotalAmount(savedBooking.getTotalAmount());
+
 		return dto;
 	}
 
+	@Override
 	@Transactional
 	public void cancelBooking(Long bookingId, String email) {
 

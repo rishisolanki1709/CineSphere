@@ -1,9 +1,11 @@
 package com.cinesphere.main.service;
 
-import com.cinesphere.main.dto.MockPaymentRequestDTO;
-
 public interface PaymentService {
-	public void processMockPayment(MockPaymentRequestDTO request);
-
 	public void refundBooking(Long bookingId, String name);
+
+	String createPaymentOrder(Long bookingId, String string) throws Exception;
+
+	void markPaymentSuccess(Long orderId);
+
+	void markPaymentFailed(Long paymentId);
 }

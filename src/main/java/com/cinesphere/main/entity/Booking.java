@@ -32,7 +32,7 @@ public class Booking {
 	private List<ShowSeat> showSeats;
 
 	@Enumerated(EnumType.STRING)
-	private BookingStatus status; // CONFIRMED, CANCELLED
+	private BookingStatus status;
 
 	private Double totalAmount;
 

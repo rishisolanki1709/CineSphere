@@ -2,6 +2,7 @@ package com.cinesphere.main.entity;
 
 import java.time.LocalDateTime;
 
+import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.EnumType;
 import jakarta.persistence.Enumerated;
@@ -19,13 +20,19 @@ public class Payment {
 	@GeneratedValue(strategy = GenerationType.IDENTITY)
 	private Long id;
 
+	@Column
 	private Double amount;
 
 	@Enumerated(EnumType.STRING)
+	@Column
 	private PaymentStatus status;
 
-	private String paymentMode; // MOCK
+	@Column
+	private String orderId;
+	@Column
+	private String paymentId;
 
+	@Column
 	private LocalDateTime createdAt;
 
 	@OneToOne
@@ -55,12 +62,20 @@ public class Payment {
 		this.status = status;
 	}
 
-	public String getPaymentMode() {
-		return paymentMode;
+	public String getOrderId() {
+		return orderId;
 	}
 
-	public void setPaymentMode(String paymentMode) {
-		this.paymentMode = paymentMode;
+	public void setOrderId(String orderId) {
+		this.orderId = orderId;
+	}
+
+	public String getPaymentId() {
+		return paymentId;
+	}
+
+	public void setPaymentId(String paymentId) {
+		this.paymentId = paymentId;
 	}
 
 	public LocalDateTime getCreatedAt() {
