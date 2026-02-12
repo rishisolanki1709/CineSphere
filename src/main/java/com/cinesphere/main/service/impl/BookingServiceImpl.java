@@ -6,6 +6,7 @@ import java.util.List;
 import org.springframework.stereotype.Service;
 
 import com.cinesphere.main.dto.BookingResponseDTO;
+import com.cinesphere.main.dto.TicketResponseDTO;
 import com.cinesphere.main.entity.Booking;
 import com.cinesphere.main.entity.BookingStatus;
 import com.cinesphere.main.entity.SeatStatus;
@@ -152,6 +153,42 @@ public class BookingServiceImpl implements BookinService {
 		dto.setTheatreName(booking.getShow().getScreen().getTheatre().getName());
 		dto.setScreenName(booking.getShow().getScreen().getScreenName());
 		dto.setShowTime(booking.getShow().getStartTime());
+
+		return dto;
+	}
+
+	@Override
+	public TicketResponseDTO getTicket(Long bookingId, String email) {
+		Booking booking = bookingRepository.findById(bookingId)
+				.orElseThrow(() -> new RuntimeException("Booking not found"));
+
+		if (booking.getStatus().equals(BookingStatus.CANCELLED) || booking.getStatus().equals(BookingStatus.REFUNDED)) {
+			throw new RuntimeException("Booking was CANCELLED");
+		}
+
+		if (!booking.getUser().getEmail().equals(email)) {
+			throw new RuntimeException("Unauthorized access");
+		}
+
+		return mapToTicketDTO(booking);
+	}
+
+	private TicketResponseDTO mapToTicketDTO(Booking booking) {
+
+		TicketResponseDTO dto = new TicketResponseDTO();
+
+		dto.setBookingId(booking.getId());
+		dto.setMovieName(booking.getShow().getMovie().getTitle());
+		dto.setTheatreName(booking.getShow().getScreen().getTheatre().getName());
+		dto.setScreenName(booking.getShow().getScreen().getScreenName());
+		dto.setShowTime(booking.getShow().getStartTime());
+
+		dto.setSeats(booking.getShowSeats().stream().map(ss -> ss.getSeat().getSeatRow() + ss.getSeat().getSeatNumber())
+				.toList());
+
+		dto.setAmount(booking.getTotalAmount());
+		dto.setStatus(booking.getStatus());
+		dto.setBookedAt(booking.getBookedAt());
 
 		return dto;
 	}

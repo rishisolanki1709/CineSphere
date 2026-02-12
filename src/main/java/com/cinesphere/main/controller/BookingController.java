@@ -16,6 +16,7 @@ import org.springframework.web.bind.annotation.RestController;
 import com.cinesphere.main.dto.ApiResponse;
 import com.cinesphere.main.dto.BookingRequestDTO;
 import com.cinesphere.main.dto.BookingResponseDTO;
+import com.cinesphere.main.dto.TicketResponseDTO;
 import com.cinesphere.main.service.BookinService;
 
 @RestController
@@ -66,6 +67,15 @@ public class BookingController {
 		BookingResponseDTO dto = bookingService.getBookingDetails(bookingId, auth.getName());
 
 		return ResponseEntity.ok(new ApiResponse<>(true, "Booking Fetched Successfully", dto));
+	}
+
+	@GetMapping("/{bookingId}/ticket")
+	@PreAuthorize("hasRole('USER')")
+	public ResponseEntity<ApiResponse<TicketResponseDTO>> getTicket(@PathVariable Long bookingId, Authentication auth) {
+
+		TicketResponseDTO ticket = bookingService.getTicket(bookingId, auth.getName());
+
+		return ResponseEntity.ok(new ApiResponse<>(true, "Ticket Fetched Successfully", ticket));
 	}
 
 }
