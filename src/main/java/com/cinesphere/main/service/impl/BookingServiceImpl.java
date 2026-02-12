@@ -114,4 +114,46 @@ public class BookingServiceImpl implements BookinService {
 		booking.setStatus(BookingStatus.CANCELLED);
 		bookingRepository.save(booking);
 	}
+
+	@Override
+	public List<BookingResponseDTO> getMyBookings(String email) {
+		List<Booking> bookings = bookingRepository.findByUserEmailOrderByBookedAtDesc(email);
+
+		return bookings.stream().map(this::mapToDTO).toList();
+	}
+
+	@Override
+	public BookingResponseDTO getBookingDetails(Long bookingId, String email) {
+
+		Booking booking = bookingRepository.findById(bookingId)
+				.orElseThrow(() -> new RuntimeException("Booking not found"));
+
+		if (!booking.getUser().getEmail().equals(email)) {
+			throw new RuntimeException("Unauthorized");
+		}
+
+		return mapToDTO(booking);
+	}
+
+	private BookingResponseDTO mapToDTO(Booking booking) {
+
+		BookingResponseDTO dto = new BookingResponseDTO();
+
+		dto.setBookingId(booking.getId());
+		dto.setShowId(booking.getShow().getId());
+		dto.setStatus(booking.getStatus());
+		dto.setTotalAmount(booking.getTotalAmount());
+		dto.setBookedAt(booking.getBookedAt());
+
+		dto.setSeats(booking.getShowSeats().stream().map(ss -> ss.getSeat().getSeatRow() + ss.getSeat().getSeatNumber())
+				.toList());
+
+		dto.setMovieName(booking.getShow().getMovie().getTitle());
+		dto.setTheatreName(booking.getShow().getScreen().getTheatre().getName());
+		dto.setScreenName(booking.getShow().getScreen().getScreenName());
+		dto.setShowTime(booking.getShow().getStartTime());
+
+		return dto;
+	}
+
 }

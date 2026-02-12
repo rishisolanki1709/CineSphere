@@ -1,5 +1,6 @@
 package com.cinesphere.main.dto;
 
+import java.time.LocalDateTime;
 import java.util.List;
 
 import com.cinesphere.main.entity.BookingStatus;
@@ -10,6 +11,11 @@ public class BookingResponseDTO {
 	private Double totalAmount;
 	private BookingStatus status;
 	private List<String> seats;
+	private LocalDateTime bookedAt;
+	private String movieName;
+	private String theatreName;
+	private String screenName;
+	private LocalDateTime showTime;
 
 	public Long getBookingId() {
 		return bookingId;
@@ -49,6 +55,46 @@ public class BookingResponseDTO {
 
 	public void setSeats(List<String> seats) {
 		this.seats = seats;
+	}
+
+	public LocalDateTime getBookedAt() {
+		return bookedAt;
+	}
+
+	public void setBookedAt(LocalDateTime bookedAt) {
+		this.bookedAt = bookedAt;
+	}
+
+	public String getMovieName() {
+		return movieName;
+	}
+
+	public void setMovieName(String movieName) {
+		this.movieName = movieName;
+	}
+
+	public String getTheatreName() {
+		return theatreName;
+	}
+
+	public void setTheatreName(String theatreName) {
+		this.theatreName = theatreName;
+	}
+
+	public String getScreenName() {
+		return screenName;
+	}
+
+	public void setScreenName(String screenName) {
+		this.screenName = screenName;
+	}
+
+	public LocalDateTime getShowTime() {
+		return showTime;
+	}
+
+	public void setShowTime(LocalDateTime showTime) {
+		this.showTime = showTime;
 	}
 
 }

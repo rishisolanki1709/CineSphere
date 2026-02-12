@@ -1,9 +1,12 @@
 package com.cinesphere.main.controller;
 
+import java.util.List;
+
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.security.core.Authentication;
 import org.springframework.web.bind.annotation.DeleteMapping;
+import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
@@ -45,4 +48,24 @@ public class BookingController {
 
 		return ResponseEntity.ok(new ApiResponse<>(true, "Booking Cancelled Successfully", null));
 	}
+
+	@GetMapping("/my")
+	@PreAuthorize("hasRole('USER')")
+	public ResponseEntity<ApiResponse<List<BookingResponseDTO>>> myBookings(Authentication auth) {
+
+		List<BookingResponseDTO> bookings = bookingService.getMyBookings(auth.getName());
+
+		return ResponseEntity.ok(new ApiResponse<>(true, "Bookings Fetched Successfully", bookings));
+	}
+
+	@GetMapping("/{bookingId}")
+	@PreAuthorize("hasRole('USER')")
+	public ResponseEntity<ApiResponse<BookingResponseDTO>> bookingDetails(@PathVariable Long bookingId,
+			Authentication auth) {
+
+		BookingResponseDTO dto = bookingService.getBookingDetails(bookingId, auth.getName());
+
+		return ResponseEntity.ok(new ApiResponse<>(true, "Booking Fetched Successfully", dto));
+	}
+
 }
