@@ -38,6 +38,9 @@ public class Booking {
 
 	private LocalDateTime bookedAt;
 
+	private LocalDateTime cancelledAt;
+	private Double refundAmount;
+
 	@PrePersist
 	public void onCreate() {
 		this.bookedAt = LocalDateTime.now();
@@ -97,5 +100,21 @@ public class Booking {
 
 	public void setShowSeats(List<ShowSeat> showSeats) {
 		this.showSeats = showSeats;
+	}
+
+	public LocalDateTime getCancelledAt() {
+		return cancelledAt;
+	}
+
+	public void setCancelledAt(LocalDateTime cancelledAt) {
+		this.cancelledAt = cancelledAt;
+	}
+
+	public Double getRefundAmount() {
+		return refundAmount;
+	}
+
+	public void setRefundAmount(Double refundAmount) {
+		this.refundAmount = refundAmount;
 	}
 }

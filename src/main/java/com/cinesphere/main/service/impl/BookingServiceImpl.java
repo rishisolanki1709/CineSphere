@@ -1,5 +1,6 @@
 package com.cinesphere.main.service.impl;
 
+import java.time.Duration;
 import java.time.LocalDateTime;
 import java.util.List;
 
@@ -9,11 +10,14 @@ import com.cinesphere.main.dto.BookingResponseDTO;
 import com.cinesphere.main.dto.TicketResponseDTO;
 import com.cinesphere.main.entity.Booking;
 import com.cinesphere.main.entity.BookingStatus;
+import com.cinesphere.main.entity.Payment;
+import com.cinesphere.main.entity.PaymentStatus;
 import com.cinesphere.main.entity.SeatStatus;
 import com.cinesphere.main.entity.Show;
 import com.cinesphere.main.entity.ShowSeat;
 import com.cinesphere.main.entity.User;
 import com.cinesphere.main.repository.BookingRepository;
+import com.cinesphere.main.repository.PaymentRepository;
 import com.cinesphere.main.repository.ShowRepository;
 import com.cinesphere.main.repository.ShowSeatRepository;
 import com.cinesphere.main.repository.UserRepository;
@@ -28,13 +32,16 @@ public class BookingServiceImpl implements BookinService {
 	private final ShowRepository showRepository;
 	private final ShowSeatRepository showSeatRepository;
 	private final BookingRepository bookingRepository;
+	private final PaymentRepository paymentRepository;
 
 	public BookingServiceImpl(UserRepository userRepository, ShowRepository showRepository,
-			ShowSeatRepository showSeatRepository, BookingRepository bookingRepository) {
+			ShowSeatRepository showSeatRepository, BookingRepository bookingRepository,
+			PaymentRepository paymentRepository) {
 		this.userRepository = userRepository;
 		this.showRepository = showRepository;
 		this.showSeatRepository = showSeatRepository;
 		this.bookingRepository = bookingRepository;
+		this.paymentRepository = paymentRepository;
 	}
 
 	@Override
@@ -95,24 +102,29 @@ public class BookingServiceImpl implements BookinService {
 			throw new RuntimeException("Booking Already Cancelled");
 		}
 
-		if (booking.getStatus() != BookingStatus.CONFIRMED) {
-			throw new RuntimeException("Booking Cannot Be Cancelled");
+		if (booking.getShow().getStartTime().isBefore(LocalDateTime.now())) {
+			throw new RuntimeException("Show Already Started");
 		}
 
-		List<ShowSeat> seats = showSeatRepository.findByBookingId(bookingId);
+		double refund = calculateRefund(booking);
 
+		List<ShowSeat> seats = showSeatRepository.findByBookingId(bookingId);
 		for (ShowSeat seat : seats) {
-			if (seat.getStatus() != SeatStatus.BOOKED) {
-				throw new RuntimeException("Seat State Invalid For Cancellation");
-			}
 			seat.setStatus(SeatStatus.AVAILABLE);
 			seat.setBooking(null);
 			seat.setLockedAt(null);
 		}
-
 		showSeatRepository.saveAll(seats);
 
+		Payment payment = paymentRepository.findByBookingId(bookingId);
+		if (payment != null) {
+			payment.setStatus(PaymentStatus.REFUNDED);
+			paymentRepository.save(payment);
+		}
+
+		booking.setRefundAmount(refund);
 		booking.setStatus(BookingStatus.CANCELLED);
+
 		bookingRepository.save(booking);
 	}
 
@@ -191,6 +203,18 @@ public class BookingServiceImpl implements BookinService {
 		dto.setBookedAt(booking.getBookedAt());
 
 		return dto;
+	}
+
+	private double calculateRefund(Booking booking) {
+
+		LocalDateTime showTime = booking.getShow().getStartTime();
+		long hours = Duration.between(LocalDateTime.now(), showTime).toHours();
+
+		if (hours > 24)
+			return booking.getTotalAmount();
+		if (hours > 3)
+			return booking.getTotalAmount() * 0.5;
+		return 0;
 	}
 
 }
