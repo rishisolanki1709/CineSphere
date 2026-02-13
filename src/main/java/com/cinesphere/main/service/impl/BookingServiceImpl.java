@@ -15,6 +15,7 @@ import com.cinesphere.main.entity.PaymentStatus;
 import com.cinesphere.main.entity.SeatStatus;
 import com.cinesphere.main.entity.Show;
 import com.cinesphere.main.entity.ShowSeat;
+import com.cinesphere.main.entity.ShowStatus;
 import com.cinesphere.main.entity.User;
 import com.cinesphere.main.repository.BookingRepository;
 import com.cinesphere.main.repository.PaymentRepository;
@@ -51,6 +52,10 @@ public class BookingServiceImpl implements BookinService {
 		User user = userRepository.findByEmail(email).orElseThrow(() -> new RuntimeException("User Not Found"));
 
 		Show show = showRepository.findById(showId).orElseThrow(() -> new RuntimeException("Show Not Found"));
+
+		if (show.getStatus() != ShowStatus.ACTIVE) {
+			throw new RuntimeException("Show Not Active");
+		}
 
 		List<ShowSeat> seats = showSeatRepository.findAllById(showSeatIds);
 

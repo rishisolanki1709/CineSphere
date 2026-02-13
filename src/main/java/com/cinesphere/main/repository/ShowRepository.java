@@ -29,4 +29,8 @@ public interface ShowRepository extends JpaRepository<Show, Long> {
 			""")
 	List<Show> findOverlappingShows(@Param("screenId") Long screenId, @Param("startTime") LocalDateTime startTime,
 			@Param("endTime") LocalDateTime endTime);
+
+	@Query("SELECT s FROM Show s WHERE s.status = 'ACTIVE'")
+	List<Show> findAllActiveShows();
+
 }

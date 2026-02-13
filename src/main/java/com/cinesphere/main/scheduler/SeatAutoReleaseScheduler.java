@@ -1,4 +1,4 @@
-package com.cinesphere.main.config;
+package com.cinesphere.main.scheduler;
 
 import java.time.LocalDateTime;
 import java.util.List;

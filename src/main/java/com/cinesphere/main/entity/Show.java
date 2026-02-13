@@ -7,6 +7,8 @@ import java.util.List;
 import jakarta.persistence.CascadeType;
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
+import jakarta.persistence.EnumType;
+import jakarta.persistence.Enumerated;
 import jakarta.persistence.FetchType;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
@@ -43,6 +45,9 @@ public class Show {
 
 	@OneToMany(mappedBy = "show", cascade = CascadeType.ALL, orphanRemoval = true)
 	private List<ShowSeat> showSeats = new ArrayList<>();
+
+	@Enumerated(EnumType.STRING)
+	private ShowStatus status = ShowStatus.ACTIVE;
 
 	public Long getId() {
 		return id;
@@ -98,5 +103,13 @@ public class Show {
 
 	public void setShowSeats(List<ShowSeat> showSeats) {
 		this.showSeats = showSeats;
+	}
+
+	public ShowStatus getStatus() {
+		return status;
+	}
+
+	public void setStatus(ShowStatus status) {
+		this.status = status;
 	}
 }
