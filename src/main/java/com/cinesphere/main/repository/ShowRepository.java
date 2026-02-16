@@ -33,4 +33,7 @@ public interface ShowRepository extends JpaRepository<Show, Long> {
 	@Query("SELECT s FROM Show s WHERE s.status = 'ACTIVE'")
 	List<Show> findAllActiveShows();
 
+	@Query("SELECT COUNT(s) FROM Show s WHERE s.status='ACTIVE'")
+	long activeShows();
+
 }

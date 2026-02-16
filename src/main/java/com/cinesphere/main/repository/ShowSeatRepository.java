@@ -29,4 +29,10 @@ public interface ShowSeatRepository extends JpaRepository<ShowSeat, Long> {
 
 	List<ShowSeat> findByStatusAndLockedAtBefore(SeatStatus status, LocalDateTime time);
 
+	@Query("SELECT COUNT(ss) FROM ShowSeat ss")
+	long totalSeats();
+
+	@Query("SELECT COUNT(ss) FROM ShowSeat ss WHERE ss.status='BOOKED'")
+	long bookedSeats();
+
 }
