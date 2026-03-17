@@ -2,6 +2,7 @@ package com.cinesphere.main.controller;
 
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.web.bind.annotation.CrossOrigin;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
@@ -18,6 +19,7 @@ import com.cinesphere.main.service.impl.UserServiceImpl;
 
 @RestController
 @RequestMapping("/api/auth")
+@CrossOrigin(origins = "http://127.0.0.1:5500")
 public class AuthController {
 
 	private final AuthServiceImpl authService;
@@ -29,7 +31,7 @@ public class AuthController {
 	}
 
 	@PostMapping("/login")
-	public ResponseEntity<ApiResponse<LoginResponse>> login(LoginRequest request) {
+	public ResponseEntity<ApiResponse<LoginResponse>> login(@RequestBody LoginRequest request) {
 		System.out.println("Email : " + request.getEmail() + " Password : " + request.getPassword());
 		LoginResponse loginResponse = authService.login(request);
 

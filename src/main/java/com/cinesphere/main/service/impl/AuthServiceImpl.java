@@ -36,7 +36,7 @@ public class AuthServiceImpl implements AuthService {
 		System.out.println("JWT Token " + token);
 		LoginResponse response = new LoginResponse();
 		response.setToken(token);
-		response.setMessage("Login successful");
+		response.setMessage("Login Successfully");
 
 		return response;
 	}
