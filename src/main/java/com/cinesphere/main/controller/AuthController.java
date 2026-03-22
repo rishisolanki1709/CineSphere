@@ -19,7 +19,6 @@ import com.cinesphere.main.service.impl.UserServiceImpl;
 
 @RestController
 @RequestMapping("/api/auth")
-@CrossOrigin(origins = "http://127.0.0.1:5500")
 public class AuthController {
 
 	private final AuthServiceImpl authService;
