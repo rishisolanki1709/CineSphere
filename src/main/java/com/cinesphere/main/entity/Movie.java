@@ -39,6 +39,9 @@ public class Movie {
 
 	@Column(nullable = false, columnDefinition = "TINYINT(1)")
 	private Boolean active = true;
+	
+	@Column
+	private String posterUrl;
 
 	public Long getId() {
 		return id;
@@ -102,5 +105,13 @@ public class Movie {
 
 	public void setActive(boolean active) {
 		this.active = active;
+	}
+
+	public String getPosterUrl() {
+		return posterUrl;
+	}
+
+	public void setPosterUrl(String posterUrl) {
+		this.posterUrl = posterUrl;
 	}
 }
