@@ -5,50 +5,65 @@ import java.util.List;
 
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
-import org.springframework.web.bind.annotation.CrossOrigin;
+import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.ModelAttribute;
+import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.cinesphere.main.dto.ApiResponse;
 import com.cinesphere.main.dto.MovieRequestDTO;
 import com.cinesphere.main.entity.Movie;
-import com.cinesphere.main.service.impl.ImageUploadService;
-import com.cinesphere.main.service.impl.MovieServiceImpl;
+import com.cinesphere.main.service.MovieService;
 
 @RestController
 @RequestMapping("/api/movies")
 public class MovieController {
-	private final MovieServiceImpl movieService;
-	private final ImageUploadService imageUploadService;
+	private final MovieService movieService;
 
-	public MovieController(MovieServiceImpl movieService, ImageUploadService imageUploadService) {
+	public MovieController(MovieService movieService) {
 		this.movieService = movieService;
-		this.imageUploadService = imageUploadService;
 	}
 
 	@PostMapping
 	@PreAuthorize("hasRole('ADMIN')")
-	public ResponseEntity<ApiResponse<Movie>> addMovie(@ModelAttribute MovieRequestDTO movieRequest) throws IOException {
-
-		String imageUrl = imageUploadService.uploadImage(movieRequest.getImage());
-		Movie movie = new Movie();
-		movie.setTitle(movieRequest.getTitle());
-		movie.setDescription(movieRequest.getDescription());
-		movie.setDurationMinutes(movieRequest.getDurationMinutes());
-		movie.setGenre(movieRequest.getGenre());
-		movie.setLanguage(movieRequest.getLanguage());
-		movie.setReleaseDate(movieRequest.getReleaseDate());
-		movie.setPosterUrl(imageUrl);
-		return ResponseEntity.ok(new ApiResponse<>(true, "Movie Added SuccessFully", movieService.addMovie(movie)));
+	public ResponseEntity<ApiResponse<Movie>> addMovie(@ModelAttribute MovieRequestDTO movieRequest)
+			throws IOException {
+		return ResponseEntity
+				.ok(new ApiResponse<>(true, "Movie Added SuccessFully", movieService.addMovie(movieRequest)));
 	}
 
-	@GetMapping
+	@GetMapping("{id}")
+	@PreAuthorize("hasRole('ADMIN')")
+	public ResponseEntity<ApiResponse<Movie>> getMovieById(@PathVariable("id") Long id) {
+		return ResponseEntity.ok(new ApiResponse<Movie>(true, "Movie Fetched Successfully", movieService.findById(id)));
+	}
+
+	@PutMapping("{id}")
+	@PreAuthorize("hasRole('ADMIN')")
+	public ResponseEntity<ApiResponse<Movie>> updateMovieById(@PathVariable Long id,
+			@ModelAttribute MovieRequestDTO movieRequest) throws IOException {
+		return ResponseEntity.ok(
+				new ApiResponse<Movie>(true, "Movie Fetched Successfully", movieService.updateMovie(id, movieRequest)));
+	}
+
+	@GetMapping("all")
 	public ResponseEntity<ApiResponse<List<Movie>>> getMovies() {
+		return ResponseEntity.ok(new ApiResponse<>(true, "Movies Fetched Successfully", movieService.getAllMovies()));
+	}
+
+	@GetMapping("/all-active")
+	public ResponseEntity<ApiResponse<List<Movie>>> getActiveMovies() {
 		return ResponseEntity
 				.ok(new ApiResponse<>(true, "Movies Fetched Successfully", movieService.getAllActiveMovies()));
+	}
+
+	@DeleteMapping("{id}")
+	public ResponseEntity<ApiResponse<List<Void>>> deleteMovies(@PathVariable Long id) {
+		movieService.deleteMovie(id);
+		return ResponseEntity.ok(new ApiResponse<>(true, "Movie Deleted Successfully", null));
 	}
 }
