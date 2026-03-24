@@ -36,13 +36,13 @@ public class MovieController {
 				.ok(new ApiResponse<>(true, "Movie Added SuccessFully", movieService.addMovie(movieRequest)));
 	}
 
-	@GetMapping("{id}")
+	@GetMapping("id={id}")
 	@PreAuthorize("hasRole('ADMIN')")
 	public ResponseEntity<ApiResponse<Movie>> getMovieById(@PathVariable("id") Long id) {
 		return ResponseEntity.ok(new ApiResponse<Movie>(true, "Movie Fetched Successfully", movieService.findById(id)));
 	}
 
-	@PutMapping("{id}")
+	@PutMapping("id={id}")
 	@PreAuthorize("hasRole('ADMIN')")
 	public ResponseEntity<ApiResponse<Movie>> updateMovieById(@PathVariable Long id,
 			@ModelAttribute MovieRequestDTO movieRequest) throws IOException {
@@ -61,8 +61,8 @@ public class MovieController {
 				.ok(new ApiResponse<>(true, "Movies Fetched Successfully", movieService.getAllActiveMovies()));
 	}
 
-	@DeleteMapping("{id}")
-	public ResponseEntity<ApiResponse<List<Void>>> deleteMovies(@PathVariable Long id) {
+	@DeleteMapping("id={id}")
+	public ResponseEntity<ApiResponse<Void>> deleteMovies(@PathVariable Long id) {
 		movieService.deleteMovie(id);
 		return ResponseEntity.ok(new ApiResponse<>(true, "Movie Deleted Successfully", null));
 	}

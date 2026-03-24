@@ -12,4 +12,12 @@ public interface TheatreService {
 
 	List<TheatreResponseDTO> getAllTheatres();
 
+	void updateStatus(Long id, boolean newStatus);
+
+	void deleteTheatre(Long id);
+
+	TheatreResponseDTO updateTheatre(Long id, Theatre theatre);
+
+	TheatreResponseDTO getTheatresById(Long id);
+
 }

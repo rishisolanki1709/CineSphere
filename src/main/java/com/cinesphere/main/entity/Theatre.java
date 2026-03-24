@@ -2,6 +2,8 @@ package com.cinesphere.main.entity;
 
 import java.util.List;
 
+import com.fasterxml.jackson.annotation.JsonManagedReference;
+
 import jakarta.persistence.CascadeType;
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
@@ -32,6 +34,7 @@ public class Theatre {
 	private boolean active = true;
 
 	@OneToMany(mappedBy = "theatre", cascade = CascadeType.ALL, orphanRemoval = true)
+	@JsonManagedReference
 	private List<Screen> screens;
 
 	public Long getId() {

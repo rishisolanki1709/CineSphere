@@ -2,6 +2,8 @@ package com.cinesphere.main.entity;
 
 import java.util.List;
 
+import com.fasterxml.jackson.annotation.JsonBackReference;
+
 import jakarta.persistence.CascadeType;
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
@@ -29,6 +31,7 @@ public class Screen {
 
 	@ManyToOne
 	@JoinColumn(name = "theatre_id", nullable = false)
+	@JsonBackReference
 	private Theatre theatre;
 
 	@OneToMany(mappedBy = "screen", cascade = CascadeType.ALL, orphanRemoval = true)

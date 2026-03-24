@@ -6,6 +6,7 @@ public class TheatreResponseDTO {
 	private String city;
 	private String address;
 	private boolean active;
+	private int screens = 0;
 
 	public Long getId() {
 		return id;
@@ -45,5 +46,13 @@ public class TheatreResponseDTO {
 
 	public void setActive(boolean active) {
 		this.active = active;
+	}
+
+	public int getScreens() {
+		return screens;
+	}
+
+	public void setScreens(int i) {
+		this.screens = i;
 	}
 }

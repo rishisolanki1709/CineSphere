@@ -33,7 +33,7 @@ public class SecurityConfig {
 	public SecurityFilterChain filterChain(HttpSecurity http) throws Exception {
 		http.cors(cors -> cors.configure(http)) // Enable CORS support in Security
 				.csrf(csrf -> csrf.disable()).csrf(csrf -> csrf.disable())
-				.authorizeHttpRequests(auth -> auth.requestMatchers("/api/auth/**", "/api/movies/*").permitAll()
+				.authorizeHttpRequests(auth -> auth.requestMatchers("/api/auth/**", "/api/movies/**").permitAll()
 						.requestMatchers("/api/admin/**").hasRole("ADMIN").requestMatchers("/api/user/**")
 						.hasRole("USER").anyRequest().authenticated())
 				.addFilterBefore(jwtAuthenticationFilter, UsernamePasswordAuthenticationFilter.class);
