@@ -40,9 +40,6 @@ public class Show {
 	@Column(nullable = false)
 	private LocalDateTime endTime;
 
-	@Column(nullable = false)
-	private Double price;
-
 	@OneToMany(mappedBy = "show", cascade = CascadeType.ALL, orphanRemoval = true)
 	private List<ShowSeat> showSeats = new ArrayList<>();
 
@@ -87,14 +84,6 @@ public class Show {
 
 	public void setEndTime(LocalDateTime endTime) {
 		this.endTime = endTime;
-	}
-
-	public Double getPrice() {
-		return price;
-	}
-
-	public void setPrice(Double price) {
-		this.price = price;
 	}
 
 	public List<ShowSeat> getShowSeats() {

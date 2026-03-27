@@ -1,5 +1,7 @@
 package com.cinesphere.main.controller;
 
+import java.util.List;
+
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -11,6 +13,7 @@ import org.springframework.web.bind.annotation.RestController;
 import com.cinesphere.main.dto.AdminDashboardDTO;
 import com.cinesphere.main.dto.ApiResponse;
 import com.cinesphere.main.dto.UserRegisterRequest;
+import com.cinesphere.main.entity.User;
 import com.cinesphere.main.service.AdminService;
 import com.cinesphere.main.service.UserService;
 
@@ -37,6 +40,12 @@ public class AdminController {
 	@PreAuthorize("hasRole('ADMIN')")
 	public ResponseEntity<ApiResponse<AdminDashboardDTO>> dashboard() {
 		return ResponseEntity.ok(new ApiResponse(true, "Details Fetched Successfully", adminService.getDashboard()));
+	}
+	
+	@GetMapping("users")
+	@PreAuthorize("hasRole('ADMIN')")
+	public ResponseEntity<ApiResponse<List<User>>> getAllUserDetails() {
+		return ResponseEntity.ok(new ApiResponse(true, "User Details Fetched Successfully", adminService.getAllUsers()));
 	}
 
 }

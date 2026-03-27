@@ -1,5 +1,6 @@
 package com.cinesphere.main.entity;
 
+import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.EnumType;
 import jakarta.persistence.Enumerated;
@@ -19,11 +20,14 @@ public class Seat {
 	@GeneratedValue(strategy = GenerationType.IDENTITY)
 	private Long id;
 
-	private String seatRow; // A, B, C
-	private Integer seatNumber; // 1, 2, 3
+	@Column
+	private Integer rowIndex;
 
-	@Enumerated(EnumType.STRING)
-	private SeatType seatType; // REGULAR, PREMIUM
+	@Column
+	private Integer colIndex;
+
+	@Column
+	private SeatType seatType; 
 
 	@Enumerated(EnumType.STRING)
 	private SeatStatus status; // AVAILABLE, BOOKED
@@ -40,30 +44,6 @@ public class Seat {
 		this.id = id;
 	}
 
-	public String getSeatRow() {
-		return seatRow;
-	}
-
-	public void setSeatRow(String seatRow) {
-		this.seatRow = seatRow;
-	}
-
-	public Integer getSeatNumber() {
-		return seatNumber;
-	}
-
-	public void setSeatNumber(Integer seatNumber) {
-		this.seatNumber = seatNumber;
-	}
-
-	public SeatType getSeatType() {
-		return seatType;
-	}
-
-	public void setSeatType(SeatType seatType) {
-		this.seatType = seatType;
-	}
-
 	public SeatStatus getStatus() {
 		return status;
 	}
@@ -78,5 +58,29 @@ public class Seat {
 
 	public void setScreen(Screen screen) {
 		this.screen = screen;
+	}
+
+	public Integer getRowIndex() {
+		return rowIndex;
+	}
+
+	public void setRowIndex(Integer rowIndex) {
+		this.rowIndex = rowIndex;
+	}
+
+	public Integer getColIndex() {
+		return colIndex;
+	}
+
+	public void setColIndex(Integer colIndex) {
+		this.colIndex = colIndex;
+	}
+
+	public SeatType getSeatType() {
+		return seatType;
+	}
+
+	public void setSeatType(SeatType seatType) {
+		this.seatType = seatType;
 	}
 }

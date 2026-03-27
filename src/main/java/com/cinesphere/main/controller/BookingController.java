@@ -29,53 +29,53 @@ public class BookingController {
 		this.bookingService = bookingService;
 	}
 
-	@PostMapping("/confirm")
-	@PreAuthorize("hasRole('USER')")
-	public ResponseEntity<ApiResponse<BookingResponseDTO>> confirmBooking(@RequestBody BookingRequestDTO request,
-			Authentication authentication) {
-
-		BookingResponseDTO dto = bookingService.confirmBooking(request.getShowId(), request.getShowSeatIds(),
-				authentication.getName());
-
-		return ResponseEntity.ok(new ApiResponse<>(true, "Booking Confirmed Successfully", dto));
-	}
-
-	@DeleteMapping("/cancel/{bookingId}")
-	@PreAuthorize("hasRole('USER')")
-	public ResponseEntity<ApiResponse<Void>> cancelBooking(@PathVariable Long bookingId,
-			Authentication authentication) {
-
-		bookingService.cancelBooking(bookingId, authentication.getName());
-
-		return ResponseEntity.ok(new ApiResponse<>(true, "Booking Cancelled Successfully", null));
-	}
-
-	@GetMapping("/my")
-	@PreAuthorize("hasRole('USER')")
-	public ResponseEntity<ApiResponse<List<BookingResponseDTO>>> myBookings(Authentication auth) {
-
-		List<BookingResponseDTO> bookings = bookingService.getMyBookings(auth.getName());
-
-		return ResponseEntity.ok(new ApiResponse<>(true, "Bookings Fetched Successfully", bookings));
-	}
-
-	@GetMapping("/{bookingId}")
-	@PreAuthorize("hasRole('USER')")
-	public ResponseEntity<ApiResponse<BookingResponseDTO>> bookingDetails(@PathVariable Long bookingId,
-			Authentication auth) {
-
-		BookingResponseDTO dto = bookingService.getBookingDetails(bookingId, auth.getName());
-
-		return ResponseEntity.ok(new ApiResponse<>(true, "Booking Fetched Successfully", dto));
-	}
-
-	@GetMapping("/{bookingId}/ticket")
-	@PreAuthorize("hasRole('USER')")
-	public ResponseEntity<ApiResponse<TicketResponseDTO>> getTicket(@PathVariable Long bookingId, Authentication auth) {
-
-		TicketResponseDTO ticket = bookingService.getTicket(bookingId, auth.getName());
-
-		return ResponseEntity.ok(new ApiResponse<>(true, "Ticket Fetched Successfully", ticket));
-	}
+//	@PostMapping("/confirm")
+//	@PreAuthorize("hasRole('USER')")
+//	public ResponseEntity<ApiResponse<BookingResponseDTO>> confirmBooking(@RequestBody BookingRequestDTO request,
+//			Authentication authentication) {
+//
+//		BookingResponseDTO dto = bookingService.confirmBooking(request.getShowId(), request.getShowSeatIds(),
+//				authentication.getName());
+//
+//		return ResponseEntity.ok(new ApiResponse<>(true, "Booking Confirmed Successfully", dto));
+//	}
+//
+//	@DeleteMapping("/cancel/{bookingId}")
+//	@PreAuthorize("hasRole('USER')")
+//	public ResponseEntity<ApiResponse<Void>> cancelBooking(@PathVariable Long bookingId,
+//			Authentication authentication) {
+//
+//		bookingService.cancelBooking(bookingId, authentication.getName());
+//
+//		return ResponseEntity.ok(new ApiResponse<>(true, "Booking Cancelled Successfully", null));
+//	}
+//
+//	@GetMapping("/my")
+//	@PreAuthorize("hasRole('USER')")
+//	public ResponseEntity<ApiResponse<List<BookingResponseDTO>>> myBookings(Authentication auth) {
+//
+//		List<BookingResponseDTO> bookings = bookingService.getMyBookings(auth.getName());
+//
+//		return ResponseEntity.ok(new ApiResponse<>(true, "Bookings Fetched Successfully", bookings));
+//	}
+//
+//	@GetMapping("/{bookingId}")
+//	@PreAuthorize("hasRole('USER')")
+//	public ResponseEntity<ApiResponse<BookingResponseDTO>> bookingDetails(@PathVariable Long bookingId,
+//			Authentication auth) {
+//
+//		BookingResponseDTO dto = bookingService.getBookingDetails(bookingId, auth.getName());
+//
+//		return ResponseEntity.ok(new ApiResponse<>(true, "Booking Fetched Successfully", dto));
+//	}
+//
+//	@GetMapping("/{bookingId}/ticket")
+//	@PreAuthorize("hasRole('USER')")
+//	public ResponseEntity<ApiResponse<TicketResponseDTO>> getTicket(@PathVariable Long bookingId, Authentication auth) {
+//
+//		TicketResponseDTO ticket = bookingService.getTicket(bookingId, auth.getName());
+//
+//		return ResponseEntity.ok(new ApiResponse<>(true, "Ticket Fetched Successfully", ticket));
+//	}
 
 }

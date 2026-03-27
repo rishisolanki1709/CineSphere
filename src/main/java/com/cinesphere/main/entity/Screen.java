@@ -28,6 +28,12 @@ public class Screen {
 
 	@Column(nullable = false)
 	private Integer totalSeats;
+	
+	@Column
+	private Integer maxRows;
+	
+	@Column
+	private Integer maxCols;
 
 	@ManyToOne
 	@JoinColumn(name = "theatre_id", nullable = false)
@@ -79,5 +85,21 @@ public class Screen {
 
 	public Screen orElseThrow(String e) {
 		throw new RuntimeException(e);
+	}
+
+	public Integer getMaxRows() {
+		return maxRows;
+	}
+
+	public void setMaxRows(Integer maxRows) {
+		this.maxRows = maxRows;
+	}
+
+	public Integer getMaxCols() {
+		return maxCols;
+	}
+
+	public void setMaxCols(Integer maxCols) {
+		this.maxCols = maxCols;
 	}
 }

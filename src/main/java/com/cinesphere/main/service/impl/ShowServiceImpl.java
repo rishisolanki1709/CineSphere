@@ -37,89 +37,89 @@ public class ShowServiceImpl implements ShowService {
 		this.showSeatRepository = showSeatRepository;
 	}
 
-	@Override
-	@Transactional
-	public ShowResponseDTO createShow(Long movieId, Long screenId, Show show) {
-
-		Movie movie = movieRepository.findById(movieId).orElseThrow(() -> new RuntimeException("Movie not found"));
-
-		// Lock screen (prevents concurrent overlapping shows)
-		Screen screen = screenRepository.lockScreen(screenId).orElseThrow("Screen not found");
+//	@Override
+//	@Transactional
+//	public ShowResponseDTO createShow(Long movieId, Long screenId, Show show) {
+//
+//		Movie movie = movieRepository.findById(movieId).orElseThrow(() -> new RuntimeException("Movie not found"));
+//
+//		// Lock screen (prevents concurrent overlapping shows)
+//		Screen screen = screenRepository.lockScreen(screenId).orElseThrow("Screen not found");
 
 		// Overlap check
-		List<Show> overlappingShows = showRepository.findOverlappingShows(screenId, show.getStartTime(),
-				show.getEndTime());
+//		List<Show> overlappingShows = showRepository.findOverlappingShows(screenId, show.getStartTime(),
+//				show.getEndTime());
+//
+//		if (!overlappingShows.isEmpty()) {
+//			throw new RuntimeException("Show time overlaps with an existing show on this screen");
+//		}
+//
+//		show.setMovie(movie);
+//		show.setScreen(screen);
+//
+//		// Save show first
+//		Show savedShow = showRepository.save(show);
+//
+//		List<Seat> seats = screen.getSeats();
+//		if (seats == null || seats.isEmpty()) {
+//			throw new RuntimeException("No seats found for this screen");
+//		}
+//
+//		// Create show seats
+//		List<ShowSeat> showSeats = new ArrayList<>();
+//
+//		for (Seat seat : seats) {
+//			ShowSeat ss = new ShowSeat();
+//			ss.setShow(savedShow);
+//			ss.setSeat(seat);
+//			ss.setStatus(SeatStatus.AVAILABLE);
+//			ss.setLockedAt(null);
+//			showSeats.add(ss);
+//		}
+//
+//		// Attach to parent (🔥 MOST IMPORTANT)
+//		savedShow.setShowSeats(showSeats);
+//
+//		// Save ONLY parent (cascade handles children)
+//		showRepository.save(savedShow);
+//
+//		return mapToDTO(savedShow);
+//	}
 
-		if (!overlappingShows.isEmpty()) {
-			throw new RuntimeException("Show time overlaps with an existing show on this screen");
-		}
+//	@Override
+//	public List<ShowResponseDTO> getShowsByScreen(Long screenId) {
+//		return showRepository.findByScreenId(screenId).stream().map(this::mapToDTO).toList();
+//	}
 
-		show.setMovie(movie);
-		show.setScreen(screen);
+//	private ShowResponseDTO mapToDTO(Show show) {
+//
+//		ShowResponseDTO dto = new ShowResponseDTO();
+//		dto.setShowId(show.getId());
+//		dto.setMovieTitle(show.getMovie().getTitle());
+//		dto.setScreenName(show.getScreen().getScreenName());
+//		dto.setStartTime(show.getStartTime());
+//		dto.setEndTime(show.getEndTime());
+//		dto.setPrice(show.getPrice());
+//
+//		return dto;
+//	}
 
-		// Save show first
-		Show savedShow = showRepository.save(show);
-
-		List<Seat> seats = screen.getSeats();
-		if (seats == null || seats.isEmpty()) {
-			throw new RuntimeException("No seats found for this screen");
-		}
-
-		// Create show seats
-		List<ShowSeat> showSeats = new ArrayList<>();
-
-		for (Seat seat : seats) {
-			ShowSeat ss = new ShowSeat();
-			ss.setShow(savedShow);
-			ss.setSeat(seat);
-			ss.setStatus(SeatStatus.AVAILABLE);
-			ss.setLockedAt(null);
-			showSeats.add(ss);
-		}
-
-		// Attach to parent (🔥 MOST IMPORTANT)
-		savedShow.setShowSeats(showSeats);
-
-		// Save ONLY parent (cascade handles children)
-		showRepository.save(savedShow);
-
-		return mapToDTO(savedShow);
-	}
-
-	@Override
-	public List<ShowResponseDTO> getShowsByScreen(Long screenId) {
-		return showRepository.findByScreenId(screenId).stream().map(this::mapToDTO).toList();
-	}
-
-	private ShowResponseDTO mapToDTO(Show show) {
-
-		ShowResponseDTO dto = new ShowResponseDTO();
-		dto.setShowId(show.getId());
-		dto.setMovieTitle(show.getMovie().getTitle());
-		dto.setScreenName(show.getScreen().getScreenName());
-		dto.setStartTime(show.getStartTime());
-		dto.setEndTime(show.getEndTime());
-		dto.setPrice(show.getPrice());
-
-		return dto;
-	}
-
-	@Override
-	public List<ShowResponseDTO> getShows(Long movieId, String city) {
-
-		return showRepository.findAvailableShows(movieId, city).stream().map(this::mapToDTO).toList();
-	}
-
-	@Override
-	public List<ShowSeatResponseDTO> getShowSeats(Long showId) {
-
-		return showSeatRepository.findByShowId(showId).stream().map(seat -> {
-			ShowSeatResponseDTO dto = new ShowSeatResponseDTO();
-			dto.setId(seat.getId());
-			dto.setSeatRow(seat.getSeat().getSeatRow());
-			dto.setSeatNumber(seat.getSeat().getSeatNumber());
-			dto.setStatus(seat.getStatus());
-			return dto;
-		}).toList();
-	}
+//	@Override
+//	public List<ShowResponseDTO> getShows(Long movieId, String city) {
+//
+//		return showRepository.findAvailableShows(movieId, city).stream().map(this::mapToDTO).toList();
+//	}
+//
+//	@Override
+//	public List<ShowSeatResponseDTO> getShowSeats(Long showId) {
+//
+//		return showSeatRepository.findByShowId(showId).stream().map(seat -> {
+//			ShowSeatResponseDTO dto = new ShowSeatResponseDTO();
+//			dto.setId(seat.getId());
+//			dto.setSeatRow(seat.getSeat().getSeatRow());
+//			dto.setSeatNumber(seat.getSeat().getSeatNumber());
+//			dto.setStatus(seat.getStatus());
+//			return dto;
+//		}).toList();
+//	}
 }

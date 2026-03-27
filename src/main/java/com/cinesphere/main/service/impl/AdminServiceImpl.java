@@ -1,25 +1,32 @@
 package com.cinesphere.main.service.impl;
 
+import java.util.List;
+
 import org.springframework.stereotype.Service;
 
 import com.cinesphere.main.dto.AdminDashboardDTO;
+import com.cinesphere.main.entity.User;
 import com.cinesphere.main.repository.BookingRepository;
 import com.cinesphere.main.repository.ShowRepository;
 import com.cinesphere.main.repository.ShowSeatRepository;
+import com.cinesphere.main.repository.UserRepository;
 import com.cinesphere.main.service.AdminService;
 
 @Service
 public class AdminServiceImpl implements AdminService {
+
+	private final UserRepository userRepository;
 
 	final private BookingRepository bookingRepository;
 	final private ShowRepository showRepository;
 	final private ShowSeatRepository showSeatRepository;
 
 	public AdminServiceImpl(BookingRepository bookingRepository, ShowRepository showRepository,
-			ShowSeatRepository showSeatRepository) {
+			ShowSeatRepository showSeatRepository, UserRepository userRepository) {
 		this.bookingRepository = bookingRepository;
 		this.showRepository = showRepository;
 		this.showSeatRepository = showSeatRepository;
+		this.userRepository = userRepository;
 	}
 
 	@Override
@@ -44,6 +51,11 @@ public class AdminServiceImpl implements AdminService {
 
 		return dto;
 
+	}
+
+	@Override
+	public List<User> getAllUsers() {
+		return userRepository.findByRole("ROLE_USER");
 	}
 
 }
