@@ -1,5 +1,5 @@
 package com.cinesphere.main.entity;
 
 public enum SeatType {
-	VIP, PREMIUM, REGULAR
+	VIP, PREMIUM, REGULAR, GAP
 }

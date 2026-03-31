@@ -1,7 +1,11 @@
 package com.cinesphere.main.entity;
 
+import java.math.BigDecimal;
 import java.time.LocalDateTime;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
+
+import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.EnumType;
 import jakarta.persistence.Enumerated;
@@ -29,6 +33,7 @@ public class ShowSeat {
 
 	@ManyToOne(fetch = FetchType.LAZY)
 	@JoinColumn(name = "show_id")
+	@JsonIgnore
 	private Show show;
 
 	@ManyToOne(fetch = FetchType.LAZY)
@@ -41,6 +46,9 @@ public class ShowSeat {
 	@ManyToOne
 	@JoinColumn(name = "booking_id")
 	private Booking booking;
+
+	@Column
+	private BigDecimal price;
 
 	private LocalDateTime lockedAt;
 
@@ -90,6 +98,14 @@ public class ShowSeat {
 
 	public void setBooking(Booking booking) {
 		this.booking = booking;
+	}
+
+	public BigDecimal getPrice() {
+		return price;
+	}
+
+	public void setPrice(BigDecimal price) {
+		this.price = price;
 	}
 
 }

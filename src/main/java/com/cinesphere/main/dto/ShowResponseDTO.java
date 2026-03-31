@@ -1,5 +1,6 @@
 package com.cinesphere.main.dto;
 
+import java.math.BigDecimal;
 import java.time.LocalDateTime;
 
 public class ShowResponseDTO {
@@ -7,9 +8,12 @@ public class ShowResponseDTO {
 	private Long showId;
 	private String movieTitle;
 	private String screenName;
+	private String theatreName;
 	private LocalDateTime startTime;
 	private LocalDateTime endTime;
-	private Double price;
+	private BigDecimal VIP_price;
+	private BigDecimal PREMIUM_price;
+	private BigDecimal REGULAR_price;
 
 	public Long getShowId() {
 		return showId;
@@ -51,12 +55,35 @@ public class ShowResponseDTO {
 		this.endTime = endTime;
 	}
 
-	public Double getPrice() {
-		return price;
+	public BigDecimal getVIP_price() {
+		return VIP_price;
 	}
 
-	public void setPrice(Double price) {
-		this.price = price;
+	public void setVIP_price(BigDecimal vIP_price) {
+		VIP_price = vIP_price;
 	}
 
+	public BigDecimal getPREMIUM_price() {
+		return PREMIUM_price;
+	}
+
+	public void setPREMIUM_price(BigDecimal pREMIUM_price) {
+		PREMIUM_price = pREMIUM_price;
+	}
+
+	public BigDecimal getREGULAR_price() {
+		return REGULAR_price;
+	}
+
+	public void setREGULAR_price(BigDecimal rEGULAR_price) {
+		REGULAR_price = rEGULAR_price;
+	}
+
+	public String getTheatreName() {
+		return theatreName;
+	}
+
+	public void setTheatreName(String theatreName) {
+		this.theatreName = theatreName;
+	}
 }

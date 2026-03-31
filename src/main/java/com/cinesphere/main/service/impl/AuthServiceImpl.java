@@ -30,12 +30,15 @@ public class AuthServiceImpl implements AuthService {
 				.authenticate(new UsernamePasswordAuthenticationToken(request.getEmail(), request.getPassword()));
 
 		User user = userRepository.findByEmail(request.getEmail())
-				.orElseThrow(() -> new RuntimeException("User not found"));
+				.orElseThrow(() -> new RuntimeException("User Not Found"));
 		String token = jwtUtil.generateToken(user.getEmail(), user.getRole());
 
 		System.out.println("JWT Token " + token);
 		LoginResponse response = new LoginResponse();
 		response.setToken(token);
+		response.setEmail(user.getEmail());
+		response.setName(user.getName());
+		response.setPhoneNumber(user.getPhone());
 		response.setMessage("Login Successfully");
 
 		return response;

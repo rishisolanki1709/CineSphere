@@ -5,6 +5,7 @@ import java.util.List;
 
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Lock;
+import org.springframework.data.jpa.repository.Modifying;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;
 
@@ -12,6 +13,7 @@ import com.cinesphere.main.entity.SeatStatus;
 import com.cinesphere.main.entity.ShowSeat;
 
 import jakarta.persistence.LockModeType;
+import jakarta.transaction.Transactional;
 
 public interface ShowSeatRepository extends JpaRepository<ShowSeat, Long> {
 	List<ShowSeat> findByShowId(Long showId);
@@ -34,5 +36,10 @@ public interface ShowSeatRepository extends JpaRepository<ShowSeat, Long> {
 
 	@Query("SELECT COUNT(ss) FROM ShowSeat ss WHERE ss.status='BOOKED'")
 	long bookedSeats();
+
+	@Modifying // Required for DELETE/UPDATE queries
+	@Transactional
+	@Query("DELETE FROM ShowSeat ss WHERE ss.show.id = :id")
+	void deleteByShowId(@Param("id") Long id);
 
 }

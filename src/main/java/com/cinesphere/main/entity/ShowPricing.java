@@ -16,17 +16,49 @@ import jakarta.persistence.Table;
 @Entity
 @Table(name = "show_pricing")
 public class ShowPricing {
-    @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private Long id;
+	@Id
+	@GeneratedValue(strategy = GenerationType.IDENTITY)
+	private Long id;
 
-    @ManyToOne
-    @JoinColumn(name = "show_id")
-    private Show show;
+	@ManyToOne
+	@JoinColumn(name = "show_id")
+	private Show show;
 
-    @Enumerated(EnumType.STRING)
-    private SeatType seatType; // VIP, PREMIUM, REGULAR
+	@Enumerated(EnumType.STRING)
+	private SeatType seatType; // VIP, PREMIUM, REGULAR
 
-    @Column(precision = 10, scale = 2)
-    private BigDecimal price; 
+	@Column(precision = 10, scale = 2)
+	private BigDecimal price;
+
+	public Long getId() {
+		return id;
+	}
+
+	public void setId(Long id) {
+		this.id = id;
+	}
+
+	public Show getShow() {
+		return show;
+	}
+
+	public void setShow(Show show) {
+		this.show = show;
+	}
+
+	public SeatType getSeatType() {
+		return seatType;
+	}
+
+	public void setSeatType(SeatType seatType) {
+		this.seatType = seatType;
+	}
+
+	public BigDecimal getPrice() {
+		return price;
+	}
+
+	public void setPrice(BigDecimal price) {
+		this.price = price;
+	}
 }
