@@ -7,6 +7,7 @@ import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;
 
+import com.cinesphere.main.entity.Movie;
 import com.cinesphere.main.entity.Show;
 
 public interface ShowRepository extends JpaRepository<Show, Long> {
@@ -35,5 +36,7 @@ public interface ShowRepository extends JpaRepository<Show, Long> {
 
 	@Query("SELECT COUNT(s) FROM Show s WHERE s.status='ACTIVE'")
 	long activeShows();
+	
+	List<Show> findByMovie(Movie movie);
 
 }

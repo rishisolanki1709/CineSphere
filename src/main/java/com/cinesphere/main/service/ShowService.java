@@ -5,6 +5,7 @@ import java.util.List;
 import com.cinesphere.main.dto.ShowRequestDTO;
 import com.cinesphere.main.dto.ShowResponseDTO;
 import com.cinesphere.main.dto.ShowSeatResponseDTO;
+import com.cinesphere.main.entity.Show;
 
 public interface ShowService {
 
@@ -21,4 +22,6 @@ public interface ShowService {
 	List<ShowResponseDTO> getAllShows();
 
 	void deleteShowById(Long id);
+
+	List<ShowResponseDTO> getShowsByMoiveId(Long movieId);
 }

@@ -198,4 +198,10 @@ public class ShowServiceImpl implements ShowService {
 		// 3. Delete the show (With CascadeType.ALL, this handles 1 & 2 automatically)
 		showRepository.delete(show);
 	}
+
+	@Override
+	public List<ShowResponseDTO> getShowsByMoiveId(Long movieId) {
+		Movie movie = movieRepository.findById(movieId).orElseThrow(() -> new RuntimeException("Movie Not Available"));
+		return showRepository.findByMovie(movie).stream().map(this::mapToDTO).toList();
+	}
 }
