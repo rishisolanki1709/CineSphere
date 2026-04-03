@@ -1,16 +1,19 @@
 package com.cinesphere.main.dto;
 
+import java.math.BigDecimal;
 import java.time.LocalDateTime;
 import java.util.List;
 
 import com.cinesphere.main.entity.BookingStatus;
+import com.cinesphere.main.entity.Seat;
+import com.cinesphere.main.entity.ShowSeat;
 
 public class BookingResponseDTO {
 	private Long bookingId;
 	private Long showId;
-	private Double totalAmount;
+	private BigDecimal totalAmount;
 	private BookingStatus status;
-	private List<String> seats;
+	private List<ShowSeat> seats;
 	private LocalDateTime bookedAt;
 	private String movieName;
 	private String theatreName;
@@ -33,11 +36,11 @@ public class BookingResponseDTO {
 		this.showId = showId;
 	}
 
-	public Double getTotalAmount() {
+	public BigDecimal getTotalAmount() {
 		return totalAmount;
 	}
 
-	public void setTotalAmount(Double double1) {
+	public void setTotalAmount(BigDecimal double1) {
 		this.totalAmount = double1;
 	}
 
@@ -49,11 +52,11 @@ public class BookingResponseDTO {
 		this.status = status;
 	}
 
-	public List<String> getSeats() {
+	public List<ShowSeat> getSeats() {
 		return seats;
 	}
 
-	public void setSeats(List<String> seats) {
+	public void setSeats(List<ShowSeat> seats) {
 		this.seats = seats;
 	}
 

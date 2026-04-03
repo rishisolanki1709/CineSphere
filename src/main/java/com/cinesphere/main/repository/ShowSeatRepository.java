@@ -41,5 +41,4 @@ public interface ShowSeatRepository extends JpaRepository<ShowSeat, Long> {
 	@Transactional
 	@Query("DELETE FROM ShowSeat ss WHERE ss.show.id = :id")
 	void deleteByShowId(@Param("id") Long id);
-
 }

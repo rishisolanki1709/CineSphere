@@ -1,5 +1,6 @@
 package com.cinesphere.main.entity;
 
+import java.math.BigDecimal;
 import java.time.LocalDateTime;
 import java.util.List;
 
@@ -34,7 +35,7 @@ public class Booking {
 	@Enumerated(EnumType.STRING)
 	private BookingStatus status;
 
-	private Double totalAmount;
+	private BigDecimal totalAmount;
 
 	private LocalDateTime bookedAt;
 
@@ -70,11 +71,11 @@ public class Booking {
 		this.show = show;
 	}
 
-	public Double getTotalAmount() {
+	public BigDecimal getTotalAmount() {
 		return totalAmount;
 	}
 
-	public void setTotalAmount(Double totalAmount) {
+	public void setTotalAmount(BigDecimal totalAmount) {
 		this.totalAmount = totalAmount;
 	}
 

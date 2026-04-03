@@ -17,28 +17,28 @@ import com.cinesphere.main.dto.ApiResponse;
 import com.cinesphere.main.dto.BookingRequestDTO;
 import com.cinesphere.main.dto.BookingResponseDTO;
 import com.cinesphere.main.dto.TicketResponseDTO;
-import com.cinesphere.main.service.BookinService;
+import com.cinesphere.main.service.BookingService;
 
 @RestController
 @RequestMapping("/api/bookings")
 public class BookingController {
 
-	private final BookinService bookingService;
+	private final BookingService bookingService;
 
-	public BookingController(BookinService bookingService) {
+	public BookingController(BookingService bookingService) {
 		this.bookingService = bookingService;
 	}
 
-//	@PostMapping("/confirm")
-//	@PreAuthorize("hasRole('USER')")
-//	public ResponseEntity<ApiResponse<BookingResponseDTO>> confirmBooking(@RequestBody BookingRequestDTO request,
-//			Authentication authentication) {
-//
-//		BookingResponseDTO dto = bookingService.confirmBooking(request.getShowId(), request.getShowSeatIds(),
-//				authentication.getName());
-//
-//		return ResponseEntity.ok(new ApiResponse<>(true, "Booking Confirmed Successfully", dto));
-//	}
+	@PostMapping("/confirm")
+	@PreAuthorize("hasRole('USER')")
+	public ResponseEntity<ApiResponse<BookingResponseDTO>> confirmBooking(@RequestBody BookingRequestDTO request,
+			Authentication authentication) {
+
+		BookingResponseDTO dto = bookingService.confirmBooking(request.getShowId(), request.getShowSeatIds(),
+				authentication.getName());
+
+		return ResponseEntity.ok(new ApiResponse<>(true, "Booking Confirmed Successfully", dto));
+	}
 //
 //	@DeleteMapping("/cancel/{bookingId}")
 //	@PreAuthorize("hasRole('USER')")

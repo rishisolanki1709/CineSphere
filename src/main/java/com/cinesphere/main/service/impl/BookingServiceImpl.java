@@ -1,11 +1,14 @@
 package com.cinesphere.main.service.impl;
 
+import org.springframework.data.domain.Pageable;
+import java.math.BigDecimal;
 import java.time.Duration;
 import java.time.LocalDateTime;
 import java.util.List;
-
+import org.springframework.data.domain.Page;
 import org.springframework.stereotype.Service;
 
+import com.cinesphere.main.dto.AdminBookingSummaryDTO;
 import com.cinesphere.main.dto.BookingResponseDTO;
 import com.cinesphere.main.dto.TicketResponseDTO;
 import com.cinesphere.main.entity.Booking;
@@ -22,12 +25,12 @@ import com.cinesphere.main.repository.PaymentRepository;
 import com.cinesphere.main.repository.ShowRepository;
 import com.cinesphere.main.repository.ShowSeatRepository;
 import com.cinesphere.main.repository.UserRepository;
-import com.cinesphere.main.service.BookinService;
+import com.cinesphere.main.service.BookingService;
 
 import jakarta.transaction.Transactional;
 
 @Service
-public class BookingServiceImpl implements BookinService {
+public class BookingServiceImpl implements BookingService {
 
 	private final UserRepository userRepository;
 	private final ShowRepository showRepository;
@@ -45,52 +48,71 @@ public class BookingServiceImpl implements BookinService {
 		this.paymentRepository = paymentRepository;
 	}
 
-//	@Override
-//	@Transactional
-//	public BookingResponseDTO confirmBooking(Long showId, List<Long> showSeatIds, String email) {
-//
-//		User user = userRepository.findByEmail(email).orElseThrow(() -> new RuntimeException("User Not Found"));
-//
-//		Show show = showRepository.findById(showId).orElseThrow(() -> new RuntimeException("Show Not Found"));
-//
-//		if (show.getStatus() != ShowStatus.ACTIVE) {
-//			throw new RuntimeException("Show Not Active");
-//		}
-//
-//		List<ShowSeat> seats = showSeatRepository.findAllById(showSeatIds);
-//
-//		for (ShowSeat seat : seats) {
-//			if (seat.getStatus() != SeatStatus.LOCKED) {
-//				throw new RuntimeException("Seat Not Locked");
-//			}
-//
-//			if (seat.getLockedAt().plusMinutes(5).isBefore(LocalDateTime.now())) {
-//				throw new RuntimeException("Seat Lock Expired");
-//			}
-//		}
-//
-//		Booking booking = new Booking();
-//		booking.setUser(user);
-//		booking.setShow(show);
-//		booking.setStatus(BookingStatus.PENDING_PAYMENT);
-//		booking.setTotalAmount(seats.size() * show.getPrice());
-//		booking.setBookedAt(LocalDateTime.now());
-//
-//		Booking savedBooking = bookingRepository.save(booking);
-//
-//		for (ShowSeat seat : seats) {
-//			seat.setBooking(savedBooking);
-//		}
-//
-//		showSeatRepository.saveAll(seats);
-//
-//		BookingResponseDTO dto = new BookingResponseDTO();
-//		dto.setBookingId(savedBooking.getId());
-//		dto.setStatus(savedBooking.getStatus());
-//		dto.setTotalAmount(savedBooking.getTotalAmount());
-//
-//		return dto;
-//	}
+	@Override
+	@Transactional
+	public BookingResponseDTO confirmBooking(Long showId, List<Long> showSeatIds, String email) {
+
+		User user = userRepository.findByEmail(email).orElseThrow(() -> new RuntimeException("User Not Found"));
+
+		Show show = showRepository.findById(showId).orElseThrow(() -> new RuntimeException("Show Not Found"));
+
+		if (show.getStatus() != ShowStatus.ACTIVE) {
+			throw new RuntimeException("Show Not Active");
+		}
+
+		List<ShowSeat> seats = showSeatRepository.findAllById(showSeatIds);
+
+		BigDecimal totalAmount = new BigDecimal(0);
+		for (ShowSeat seat : seats) {
+			totalAmount = totalAmount.add(seat.getPrice());
+			if (seat.getStatus() != SeatStatus.LOCKED) {
+				throw new RuntimeException("Seat Not Locked");
+			}
+
+			if (seat.getLockedAt().plusMinutes(5).isBefore(LocalDateTime.now())) {
+				throw new RuntimeException("Seat Lock Expired");
+			}
+			System.out.println("Total Amount : " + totalAmount);
+		}
+
+		Booking booking = new Booking();
+		booking.setUser(user);
+		booking.setShow(show);
+		booking.setStatus(BookingStatus.PENDING_PAYMENT);
+		booking.setTotalAmount(totalAmount);
+		booking.setBookedAt(LocalDateTime.now());
+
+		Booking savedBooking = bookingRepository.save(booking);
+
+		for (ShowSeat seat : seats) {
+			seat.setBooking(savedBooking);
+		}
+
+		showSeatRepository.saveAll(seats);
+
+		BookingResponseDTO dto = new BookingResponseDTO();
+		dto.setBookingId(savedBooking.getId());
+		dto.setStatus(savedBooking.getStatus());
+		dto.setTotalAmount(savedBooking.getTotalAmount());
+		dto.setBookedAt(LocalDateTime.now());
+		dto.setMovieName(savedBooking.getShow().getMovie().getTitle());
+		dto.setScreenName(savedBooking.getShow().getScreen().getScreenName());
+		dto.setSeats(savedBooking.getShowSeats());
+		dto.setShowId(savedBooking.getShow().getId());
+		dto.setShowTime(savedBooking.getShow().getStartTime());
+		dto.setTheatreName(savedBooking.getShow().getScreen().getTheatre().getName());
+
+		return dto;
+	}
+
+	@Override
+	public Page<AdminBookingSummaryDTO> findAll(Pageable pageable) {
+		Page<Booking> bookings = bookingRepository.findAll(pageable);
+
+		// This converts the Page<Booking> to Page<AdminBookingSummaryDTO>
+		Page<AdminBookingSummaryDTO> dtoPage = bookings.map(AdminBookingSummaryDTO::new);
+		return dtoPage;
+	}
 
 //	@Override
 //	@Transactional
@@ -210,16 +232,16 @@ public class BookingServiceImpl implements BookinService {
 //		return dto;
 //	}
 
-	private double calculateRefund(Booking booking) {
-
-		LocalDateTime showTime = booking.getShow().getStartTime();
-		long hours = Duration.between(LocalDateTime.now(), showTime).toHours();
-
-		if (hours > 24)
-			return booking.getTotalAmount();
-		if (hours > 3)
-			return booking.getTotalAmount() * 0.5;
-		return 0;
-	}
+//	private double calculateRefund(Booking booking) {
+//
+//		LocalDateTime showTime = booking.getShow().getStartTime();
+//		long hours = Duration.between(LocalDateTime.now(), showTime).toHours();
+//
+//		if (hours > 24)
+//			return booking.getTotalAmount();
+//		if (hours > 3)
+//			return booking.getTotalAmount() * 0.5;
+//		return 0;
+//	}
 
 }

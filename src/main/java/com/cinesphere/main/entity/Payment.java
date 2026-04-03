@@ -1,5 +1,6 @@
 package com.cinesphere.main.entity;
 
+import java.math.BigDecimal;
 import java.time.LocalDateTime;
 
 import jakarta.persistence.Column;
@@ -21,13 +22,13 @@ public class Payment {
 	private Long id;
 
 	@Column
-	private Double amount;
+	private BigDecimal amount;
 
 	@Enumerated(EnumType.STRING)
 	@Column
 	private PaymentStatus status;
 
-	@Column
+	@Column(unique = true)
 	private String orderId;
 	@Column
 	private String paymentId;
@@ -46,11 +47,11 @@ public class Payment {
 		this.id = id;
 	}
 
-	public Double getAmount() {
+	public BigDecimal getAmount() {
 		return amount;
 	}
 
-	public void setAmount(Double amount) {
+	public void setAmount(BigDecimal amount) {
 		this.amount = amount;
 	}
 
