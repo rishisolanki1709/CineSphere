@@ -61,6 +61,17 @@ public class MovieController {
 				.ok(new ApiResponse<>(true, "Movies Fetched Successfully", movieService.getAllActiveMovies()));
 	}
 
+	@GetMapping("city={city}")
+	public ResponseEntity<ApiResponse<List<Movie>>> getActiveMoviesByCity(@PathVariable("city") String city) {
+		if (city == null || city.isEmpty() || city.equals("All")) {
+			return ResponseEntity
+					.ok(new ApiResponse<>(true, "Movies Fetched Successfully", movieService.getAllMovies()));
+
+		}
+		return ResponseEntity.ok(
+				new ApiResponse<>(true, "Movies Fetched Successfully", movieService.getAllActiveMoviesByCity(city)));
+	}
+
 	@DeleteMapping("id={id}")
 	public ResponseEntity<ApiResponse<Void>> deleteMovies(@PathVariable Long id) {
 		movieService.deleteMovie(id);

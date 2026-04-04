@@ -68,7 +68,8 @@ public class ShowController {
 	@GetMapping("all")
 	@PreAuthorize("hasAnyRole('USER','ADMIN')")
 	public ResponseEntity<ApiResponse<List<ShowResponseDTO>>> getAllShows() {
-		return ResponseEntity.ok(new ApiResponse(true, "Shows Fetched Successfully", showService.getAllShows()));
+		return ResponseEntity.ok(
+				new ApiResponse<List<ShowResponseDTO>>(true, "Shows Fetched Successfully", showService.getAllShows()));
 	}
 
 	@GetMapping("/id={showId}/seats")
@@ -91,14 +92,13 @@ public class ShowController {
 		showService.deleteShowById(id);
 		return ResponseEntity.ok(new ApiResponse<>(true, "Show Successfull Deleted", null));
 	}
-	
+
 	@GetMapping("/movie/id={movieId}")
 	@PreAuthorize("hasAnyRole('USER','ADMIN')")
 	public ResponseEntity<ApiResponse<List<ShowResponseDTO>>> getShowsByMoiveId(@PathVariable Long movieId) {
 		System.out.println("aaya hai chalo yaha tho");
-		return ResponseEntity.ok(new ApiResponse<>(true, "Shows Fetched Successfully",
-				showService.getShowsByMoiveId(movieId)));
+		return ResponseEntity
+				.ok(new ApiResponse<>(true, "Shows Fetched Successfully", showService.getShowsByMoiveId(movieId)));
 	}
-	
 
 }

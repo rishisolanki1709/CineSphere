@@ -21,6 +21,7 @@ import com.cinesphere.main.repository.BookingRepository;
 import com.cinesphere.main.repository.PaymentRepository;
 import com.cinesphere.main.repository.ShowSeatRepository;
 import com.cinesphere.main.service.PaymentService;
+import com.razorpay.Order;
 import com.razorpay.RazorpayClient;
 import com.razorpay.RazorpayException;
 import com.razorpay.Utils;
@@ -58,6 +59,23 @@ public class PaymentServiceImpl implements PaymentService {
 			throw new RuntimeException("Booking not eligible for payment");
 		}
 
+		Payment existingPayment = paymentRepository.findByBookingId(bookingId);
+
+		Payment payment;
+		if (existingPayment != null) {
+			payment = existingPayment;
+			// If the previous payment was already successful, don't allow re-payment
+			if (payment.getStatus() == PaymentStatus.SUCCESS) {
+				throw new RuntimeException("This booking is already paid!");
+			}
+			// Reuse the existing record
+		} else {
+			// Create a new record only if it doesn't exist
+			payment = new Payment();
+			payment.setBooking(booking);
+			payment.setAmount(booking.getTotalAmount());
+		}
+
 		try {
 			JSONObject orderRequest = new JSONObject();
 			// Razorpay expects amount in Integer Paise
@@ -66,10 +84,9 @@ public class PaymentServiceImpl implements PaymentService {
 			orderRequest.put("receipt", "txn_" + bookingId);
 
 			// Create the order on Razorpay servers
-			com.razorpay.Order razorpayOrder = razorpayClient.orders.create(orderRequest);
+			Order razorpayOrder = razorpayClient.orders.create(orderRequest);
 			String razorpayOrderId = razorpayOrder.get("id");
 
-			Payment payment = new Payment();
 			payment.setBooking(booking);
 			payment.setAmount(booking.getTotalAmount());
 			payment.setStatus(PaymentStatus.PENDING);

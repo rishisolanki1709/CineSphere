@@ -155,12 +155,13 @@ public class BookingServiceImpl implements BookingService {
 //		bookingRepository.save(booking);
 //	}
 
-//	@Override
-//	public List<BookingResponseDTO> getMyBookings(String email) {
-//		List<Booking> bookings = bookingRepository.findByUserEmailOrderByBookedAtDesc(email);
-//
-//		return bookings.stream().map(this::mapToDTO).toList();
-//	}
+	@Override
+	public List<BookingResponseDTO> getMyBookings(String email) {
+		List<Booking> bookings = bookingRepository.findByUserEmailOrderByBookedAtDesc(email);
+
+		return bookings.stream().map(this::mapToDTO).toList();
+	}
+
 //
 //	@Override
 //	public BookingResponseDTO getBookingDetails(Long bookingId, String email) {
@@ -175,26 +176,23 @@ public class BookingServiceImpl implements BookingService {
 //		return mapToDTO(booking);
 //	}
 //
-//	private BookingResponseDTO mapToDTO(Booking booking) {
-//
-//		BookingResponseDTO dto = new BookingResponseDTO();
-//
-//		dto.setBookingId(booking.getId());
-//		dto.setShowId(booking.getShow().getId());
-//		dto.setStatus(booking.getStatus());
-//		dto.setTotalAmount(booking.getTotalAmount());
-//		dto.setBookedAt(booking.getBookedAt());
-//
-//		dto.setSeats(booking.getShowSeats().stream().map(ss -> ss.getSeat().getSeatRow() + ss.getSeat().getSeatNumber())
-//				.toList());
-//
-//		dto.setMovieName(booking.getShow().getMovie().getTitle());
-//		dto.setTheatreName(booking.getShow().getScreen().getTheatre().getName());
-//		dto.setScreenName(booking.getShow().getScreen().getScreenName());
-//		dto.setShowTime(booking.getShow().getStartTime());
-//
-//		return dto;
-//	}
+	private BookingResponseDTO mapToDTO(Booking booking) {
+
+		BookingResponseDTO dto = new BookingResponseDTO();
+
+		dto.setBookingId(booking.getId());
+		dto.setShowId(booking.getShow().getId());
+		dto.setStatus(booking.getStatus());
+		dto.setTotalAmount(booking.getTotalAmount());
+		dto.setBookedAt(booking.getBookedAt());
+		dto.setSeats(null);
+		dto.setMovieName(booking.getShow().getMovie().getTitle());
+		dto.setTheatreName(booking.getShow().getScreen().getTheatre().getName());
+		dto.setScreenName(booking.getShow().getScreen().getScreenName());
+		dto.setShowTime(booking.getShow().getStartTime());
+
+		return dto;
+	}
 
 //	@Override
 //	public TicketResponseDTO getTicket(Long bookingId, String email) {

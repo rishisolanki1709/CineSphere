@@ -50,14 +50,14 @@ public class BookingController {
 //		return ResponseEntity.ok(new ApiResponse<>(true, "Booking Cancelled Successfully", null));
 //	}
 //
-//	@GetMapping("/my")
-//	@PreAuthorize("hasRole('USER')")
-//	public ResponseEntity<ApiResponse<List<BookingResponseDTO>>> myBookings(Authentication auth) {
-//
-//		List<BookingResponseDTO> bookings = bookingService.getMyBookings(auth.getName());
-//
-//		return ResponseEntity.ok(new ApiResponse<>(true, "Bookings Fetched Successfully", bookings));
-//	}
+	@GetMapping("/my")
+	@PreAuthorize("hasRole('USER')")
+	public ResponseEntity<ApiResponse<List<BookingResponseDTO>>> myBookings(Authentication auth) {
+
+		List<BookingResponseDTO> bookings = bookingService.getMyBookings(auth.getName());
+
+		return ResponseEntity.ok(new ApiResponse<>(true, "Bookings Fetched Successfully", bookings));
+	}
 //
 //	@GetMapping("/{bookingId}")
 //	@PreAuthorize("hasRole('USER')")

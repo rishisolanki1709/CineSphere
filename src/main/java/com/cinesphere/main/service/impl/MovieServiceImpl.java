@@ -69,4 +69,9 @@ public class MovieServiceImpl implements MovieService {
 	public void deleteMovie(Long id) {
 		movieRepository.deleteById(id);
 	}
+
+	@Override
+	public List<Movie> getAllActiveMoviesByCity(String city) {
+		return movieRepository.findActiveMoviesByCity(city);
+	}
 }
