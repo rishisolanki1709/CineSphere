@@ -14,8 +14,6 @@ public interface PaymentService {
 
 	String createPaymentOrder(Long bookingId, String string) throws Exception;
 
-	void markPaymentSuccess(Long orderId, Long bookingId);
-
 	void markPaymentFailed(Long paymentId);
 
 	public void verifyAndConfirmPayment(Long bookingId, PaymentVerificationDTO verificationDTO);

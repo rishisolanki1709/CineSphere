@@ -45,16 +45,6 @@ public class PaymentController {
 		return ResponseEntity.ok(new ApiResponse<>(true, "Order Created", orderId));
 	}
 
-	@PostMapping("success/{bookingId}?paymentId={paymentId}")
-	@PreAuthorize("hasRole('USER')")
-	public ResponseEntity<ApiResponse<String>> success(@PathVariable("paymentId") Long paymentId,
-			@PathVariable("bookingId") Long bookingId) {
-
-		paymentService.markPaymentSuccess(paymentId, bookingId);
-
-		return ResponseEntity.ok(new ApiResponse<>(true, "Payment Success", null));
-	}
-
 	@PostMapping("/failed/{paymentId}")
 	@PreAuthorize("hasRole('USER')")
 	public ResponseEntity<ApiResponse<String>> failed(@PathVariable Long paymentId) {

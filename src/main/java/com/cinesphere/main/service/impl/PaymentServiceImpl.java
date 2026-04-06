@@ -2,9 +2,11 @@ package com.cinesphere.main.service.impl;
 
 import java.time.LocalDateTime;
 import java.util.List;
+import java.util.stream.Collectors;
 
 import org.springframework.data.domain.Pageable;
 import org.json.JSONObject;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.data.domain.Page;
 import org.springframework.stereotype.Service;
@@ -26,7 +28,7 @@ import com.razorpay.RazorpayClient;
 import com.razorpay.RazorpayException;
 import com.razorpay.Utils;
 
-import jakarta.transaction.Transactional;
+import org.springframework.transaction.annotation.Transactional;
 
 @Service
 public class PaymentServiceImpl implements PaymentService {
@@ -37,6 +39,8 @@ public class PaymentServiceImpl implements PaymentService {
 	private final RazorpayClient razorpayClient;
 	@Value("${razorpay.key.secret}")
 	private String keySecret;
+	@Autowired
+	private EmailService emailService;
 
 	public PaymentServiceImpl(BookingRepository bookingRepository, PaymentRepository paymentRepository,
 			ShowSeatRepository showSeatRepository, RazorpayClient razorpayClient) {
@@ -129,35 +133,6 @@ public class PaymentServiceImpl implements PaymentService {
 
 	@Override
 	@Transactional
-	public void markPaymentSuccess(Long paymentId, Long bookingId) {
-
-		Payment payment = paymentRepository.findById(paymentId)
-				.orElseThrow(() -> new RuntimeException("Payment Not Found"));
-
-		if (payment.getStatus() == PaymentStatus.SUCCESS)
-			return;
-
-		payment.setStatus(PaymentStatus.SUCCESS);
-		payment.setPaymentId("PAY_" + System.currentTimeMillis());
-
-		Booking booking = bookingRepository.findById(bookingId)
-				.orElseThrow(() -> new RuntimeException("Booking Not Found"));
-		booking.setStatus(BookingStatus.CONFIRMED);
-
-		// mark seats BOOKED
-		List<ShowSeat> seats = showSeatRepository.findByBookingId(booking.getId());
-		for (ShowSeat seat : seats) {
-			seat.setStatus(SeatStatus.BOOKED);
-			seat.setLockedAt(null);
-		}
-
-		showSeatRepository.saveAll(seats);
-		bookingRepository.save(booking);
-		paymentRepository.save(payment);
-	}
-
-	@Override
-	@Transactional
 	public void markPaymentFailed(Long paymentId) {
 
 		Payment payment = paymentRepository.findById(paymentId)
@@ -220,6 +195,33 @@ public class PaymentServiceImpl implements PaymentService {
 			seat.setLockedAt(null); // Clear the lock timer
 		}
 
+		String userEmail = booking.getUser().getEmail();
+		String movieName = booking.getShow().getMovie().getTitle();
+		StringBuilder seats = new StringBuilder();
+		booking.getShowSeats().forEach(s -> seats.append(", " + s.getSeat().getRowIndex() + s.getSeat().getColIndex()));
+		String showTime = booking.getShow().getStartTime().toString();
+		String theatre = booking.getShow().getScreen().getTheatre().getName();
+		String amount = String.valueOf(booking.getTotalAmount());
+		String subject = "🍿 Booking Confirmed: " + movieName;
+		String body = "<html><body style='font-family: Arial, sans-serif; background-color: #f4f4f4; margin: 0; padding: 20px;'>"
+				+ "  <div style='max-width: 600px; margin: auto; background: white; border-radius: 10px; overflow: hidden; box-shadow: 0 4px 10px rgba(0,0,0,0.1);'>"
+				+ "    <div style='background: #e50914; padding: 20px; text-align: center; color: white;'>"
+				+ "      <h1 style='margin: 0; font-size: 24px;'>CineSphere</h1>" + "    </div>"
+				+ "    <div style='padding: 30px;'>" + "      <h2 style='color: #333;'>Booking Confirmed!</h2>"
+				+ "      <p style='color: #666; font-size: 16px;'>Hi there, get the popcorn ready! Your seats are reserved for your upcoming movie experience.</p>"
+				+ "      <div style='border: 1px dashed #ccc; padding: 20px; border-radius: 8px; background: #fffcfc; margin: 20px 0;'>"
+				+ "        <h3 style='margin-top: 0; color: #e50914;'>" + movieName + "</h3>"
+				+ "        <p style='margin: 5px 0;'><strong>📍 Theatre:</strong> " + theatre + "</p>"
+				+ "        <p style='margin: 5px 0;'><strong>📅 Date & Time:</strong> " + showTime + "</p>"
+				+ "        <p style='margin: 5px 0;'><strong>💺 Seats:</strong> <span style='background: #eee; padding: 2px 8px; border-radius: 4px;'>"
+				+ seats + "</span></p>" + "        <p style='margin: 5px 0;'><strong>💰 Total Paid:</strong> ₹" + amount
+				+ "</p>" + "      </div>"
+				+ "      <p style='font-size: 12px; color: #999; text-align: center;'>Please show this email at the cinema entrance. No physical printout required.</p>"
+				+ "    </div>"
+				+ "    <div style='background: #f9f9f9; padding: 15px; text-align: center; font-size: 12px; color: #777;'>"
+				+ "      © 2026 CineSphere Entertainment. All Rights Reserved." + "    </div>" + "  </div>"
+				+ "</body></html>";
+		emailService.sendBookingConfirmation(userEmail, subject, body);
 		// Save everything (Transaction will roll back if any save fails)
 		bookingRepository.save(booking);
 		paymentRepository.save(payment);
@@ -228,8 +230,7 @@ public class PaymentServiceImpl implements PaymentService {
 
 	@Override
 	public List<Payment> getAllPayments() {
-		// TODO Auto-generated method stub
-		return null;
+		return paymentRepository.findAll();
 	}
 
 	@Override
