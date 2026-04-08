@@ -50,7 +50,6 @@ public class TheatreController {
 	}
 	
 	@GetMapping("id={id}")
-//	@PreAuthorize("hasAnyRole('USER', 'ADMIN')")
 	public ResponseEntity<ApiResponse<TheatreResponseDTO>> getTheatresById(@PathVariable Long id) {
 		System.out.println(id);
 		TheatreResponseDTO dto = theatreService.getTheatresById(id);
@@ -65,6 +64,7 @@ public class TheatreController {
 	}
 
 	@PutMapping("/id={id}/status={newStatus}")
+	@PreAuthorize("hasRole('ADMIN')")
 	public ResponseEntity<ApiResponse<Void>> updateTheatreStatus(@PathVariable("id") Long id,
 			@PathVariable("newStatus") boolean newStatus) {
 		theatreService.updateStatus(id, newStatus);

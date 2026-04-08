@@ -48,7 +48,6 @@ public class AdminController {
 	}
 
 	@GetMapping("/dashboard")
-	@PreAuthorize("hasRole('ADMIN')")
 	public ResponseEntity<ApiResponse<AdminDashboardResponseDTO>> dashboard(
 			@RequestParam(defaultValue = "overall") String range) {
 		return ResponseEntity.ok(new ApiResponse<AdminDashboardResponseDTO>(true, "Details Fetched Successfully",
@@ -56,7 +55,6 @@ public class AdminController {
 	}
 
 	@GetMapping("users")
-	@PreAuthorize("hasRole('ADMIN')")
 	public ResponseEntity<ApiResponse<List<User>>> getAllUserDetails() {
 		return ResponseEntity
 				.ok(new ApiResponse<List<User>>(true, "User Details Fetched Successfully", adminService.getAllUsers()));

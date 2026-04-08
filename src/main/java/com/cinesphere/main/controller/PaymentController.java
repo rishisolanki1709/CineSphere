@@ -28,7 +28,7 @@ public class PaymentController {
 	}
 
 	@PostMapping("/refund/{bookingId}")
-	@PreAuthorize("hasRole('USER')")
+	@PreAuthorize("hasAnyRole('USER', 'ADMIN')")
 	public ResponseEntity<ApiResponse<String>> refund(@PathVariable Long bookingId, Authentication authentication) {
 
 		paymentService.refundBooking(bookingId, authentication.getName());
@@ -36,7 +36,7 @@ public class PaymentController {
 	}
 
 	@PostMapping("/create-order/{bookingId}")
-	@PreAuthorize("hasRole('USER')")
+	@PreAuthorize("hasAnyRole('USER', 'ADMIN')")
 	public ResponseEntity<ApiResponse<String>> createOrder(@PathVariable Long bookingId, Authentication auth)
 			throws Exception {
 
@@ -46,7 +46,7 @@ public class PaymentController {
 	}
 
 	@PostMapping("/failed/{paymentId}")
-	@PreAuthorize("hasRole('USER')")
+	@PreAuthorize("hasAnyRole('USER', 'ADMIN')")
 	public ResponseEntity<ApiResponse<String>> failed(@PathVariable Long paymentId) {
 
 		paymentService.markPaymentFailed(paymentId);
@@ -55,7 +55,7 @@ public class PaymentController {
 	}
 
 	@PostMapping("/verify/{bookingId}")
-	@PreAuthorize("hasRole('USER')")
+	@PreAuthorize("hasAnyRole('USER', 'ADMIN')")
 	public ResponseEntity<ApiResponse<String>> verifyPayment(@PathVariable Long bookingId,
 			@RequestBody PaymentVerificationDTO verificationDTO) {
 

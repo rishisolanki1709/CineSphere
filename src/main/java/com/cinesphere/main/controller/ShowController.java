@@ -42,7 +42,7 @@ public class ShowController {
 	}
 
 	@PostMapping("/lock-seats")
-	@PreAuthorize("hasRole('USER')")
+	@PreAuthorize("hasAnyRole('USER', 'ADMIN')")
 	public ResponseEntity<ApiResponse<String>> lockSeats(@RequestBody LockSeatDTO lockSeatDTO,
 			Authentication authentication) {
 		lockService.lockSeats(lockSeatDTO.getShowId(), lockSeatDTO.getShowSeatIds(), authentication.getName());

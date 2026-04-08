@@ -5,7 +5,6 @@ import java.util.List;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.security.core.Authentication;
-import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -16,7 +15,6 @@ import org.springframework.web.bind.annotation.RestController;
 import com.cinesphere.main.dto.ApiResponse;
 import com.cinesphere.main.dto.BookingRequestDTO;
 import com.cinesphere.main.dto.BookingResponseDTO;
-import com.cinesphere.main.dto.TicketResponseDTO;
 import com.cinesphere.main.service.BookingService;
 
 @RestController
@@ -58,24 +56,5 @@ public class BookingController {
 
 		return ResponseEntity.ok(new ApiResponse<>(true, "Bookings Fetched Successfully", bookings));
 	}
-//
-//	@GetMapping("/{bookingId}")
-//	@PreAuthorize("hasRole('USER')")
-//	public ResponseEntity<ApiResponse<BookingResponseDTO>> bookingDetails(@PathVariable Long bookingId,
-//			Authentication auth) {
-//
-//		BookingResponseDTO dto = bookingService.getBookingDetails(bookingId, auth.getName());
-//
-//		return ResponseEntity.ok(new ApiResponse<>(true, "Booking Fetched Successfully", dto));
-//	}
-//
-//	@GetMapping("/{bookingId}/ticket")
-//	@PreAuthorize("hasRole('USER')")
-//	public ResponseEntity<ApiResponse<TicketResponseDTO>> getTicket(@PathVariable Long bookingId, Authentication auth) {
-//
-//		TicketResponseDTO ticket = bookingService.getTicket(bookingId, auth.getName());
-//
-//		return ResponseEntity.ok(new ApiResponse<>(true, "Ticket Fetched Successfully", ticket));
-//	}
 
 }
