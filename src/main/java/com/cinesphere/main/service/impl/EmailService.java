@@ -1,7 +1,6 @@
 package com.cinesphere.main.service.impl;
 
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.mail.SimpleMailMessage;
 import org.springframework.mail.javamail.JavaMailSender;
 import org.springframework.mail.javamail.MimeMessageHelper;
 import org.springframework.scheduling.annotation.Async;
@@ -11,10 +10,6 @@ import jakarta.mail.internet.MimeMessage;
 
 @Service
 public class EmailService {
-
-	public EmailService() {
-		System.out.println("DEBUG: Email Service Bean Created!");
-	}
 
 	@Autowired
 	private JavaMailSender mailSender;

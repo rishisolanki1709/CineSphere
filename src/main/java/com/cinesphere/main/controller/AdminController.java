@@ -9,10 +9,11 @@ import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.cinesphere.main.dto.AdminBookingSummaryDTO;
-import com.cinesphere.main.dto.AdminDashboardDTO;
+import com.cinesphere.main.dto.AdminDashboardResponseDTO;
 import com.cinesphere.main.dto.AdminPaymentResponseDTO;
 import com.cinesphere.main.dto.ApiResponse;
 import com.cinesphere.main.dto.UserRegisterRequest;
@@ -48,9 +49,10 @@ public class AdminController {
 
 	@GetMapping("/dashboard")
 	@PreAuthorize("hasRole('ADMIN')")
-	public ResponseEntity<ApiResponse<AdminDashboardDTO>> dashboard() {
-		return ResponseEntity.ok(
-				new ApiResponse<AdminDashboardDTO>(true, "Details Fetched Successfully", adminService.getDashboard()));
+	public ResponseEntity<ApiResponse<AdminDashboardResponseDTO>> dashboard(
+			@RequestParam(defaultValue = "overall") String range) {
+		return ResponseEntity.ok(new ApiResponse<AdminDashboardResponseDTO>(true, "Details Fetched Successfully",
+				adminService.getDashboard(range)));
 	}
 
 	@GetMapping("users")

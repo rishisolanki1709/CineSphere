@@ -2,6 +2,7 @@ package com.cinesphere.main.repository;
 
 import java.time.LocalDateTime;
 import java.util.List;
+import java.util.Map;
 
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Lock;
@@ -41,4 +42,10 @@ public interface ShowSeatRepository extends JpaRepository<ShowSeat, Long> {
 	@Transactional
 	@Query("DELETE FROM ShowSeat ss WHERE ss.show.id = :id")
 	void deleteByShowId(@Param("id") Long id);
+
+	@Query(value = "SELECT m.title as movieTitle, COUNT(ss.id) as ticketsSold " + "FROM show_seats ss "
+			+ "JOIN bookings b ON ss.booking_id = b.id " + "JOIN shows s ON ss.show_id = s.id "
+			+ "JOIN movies m ON s.movie_id = m.id " + "WHERE b.status = 'CONFIRMED' AND b.booked_at >= :startDate "
+			+ "GROUP BY m.title " + "ORDER BY ticketsSold DESC", nativeQuery = true)
+	List<Map<String, Object>> getTopMovies(LocalDateTime startDate);
 }
