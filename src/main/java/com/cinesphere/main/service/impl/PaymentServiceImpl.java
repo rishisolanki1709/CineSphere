@@ -2,7 +2,6 @@ package com.cinesphere.main.service.impl;
 
 import java.time.LocalDateTime;
 import java.util.List;
-import java.util.stream.Collectors;
 
 import org.springframework.data.domain.Pageable;
 import org.json.JSONObject;
@@ -161,7 +160,7 @@ public class PaymentServiceImpl implements PaymentService {
 	public void verifyAndConfirmPayment(Long bookingId, PaymentVerificationDTO dto) {
 		// 1. Fetch the booking
 		Booking booking = bookingRepository.findById(bookingId)
-				.orElseThrow(() -> new RuntimeException("Booking not found"));
+				.orElseThrow(() -> new RuntimeException("Booking Not Found"));
 
 		// 2. Security Check: Verify the Signature
 		try {

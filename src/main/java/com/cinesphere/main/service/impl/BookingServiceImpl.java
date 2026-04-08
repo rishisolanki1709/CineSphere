@@ -10,7 +10,6 @@ import org.springframework.stereotype.Service;
 
 import com.cinesphere.main.dto.AdminBookingSummaryDTO;
 import com.cinesphere.main.dto.BookingResponseDTO;
-import com.cinesphere.main.dto.TicketResponseDTO;
 import com.cinesphere.main.entity.Booking;
 import com.cinesphere.main.entity.BookingStatus;
 import com.cinesphere.main.entity.Payment;
