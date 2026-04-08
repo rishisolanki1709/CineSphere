@@ -12,9 +12,9 @@ import com.cinesphere.main.entity.Booking;
 
 public interface BookingService {
 	public BookingResponseDTO confirmBooking(Long showId, List<Long> showSeatIds, String email);
-//
-//	public void cancelBooking(Long bookingId, String email);
-//
+
+	public void cancelBooking(Long bookingId, String email);
+
 	List<BookingResponseDTO> getMyBookings(String email);
 //
 //	BookingResponseDTO getBookingDetails(Long bookingId, String email);

@@ -37,15 +37,17 @@ public class BookingServiceImpl implements BookingService {
 	private final ShowSeatRepository showSeatRepository;
 	private final BookingRepository bookingRepository;
 	private final PaymentRepository paymentRepository;
+	private final RefundService refundService;
 
 	public BookingServiceImpl(UserRepository userRepository, ShowRepository showRepository,
 			ShowSeatRepository showSeatRepository, BookingRepository bookingRepository,
-			PaymentRepository paymentRepository) {
+			PaymentRepository paymentRepository, RefundService refundService) {
 		this.userRepository = userRepository;
 		this.showRepository = showRepository;
 		this.showSeatRepository = showSeatRepository;
 		this.bookingRepository = bookingRepository;
 		this.paymentRepository = paymentRepository;
+		this.refundService = refundService;
 	}
 
 	@Override
@@ -114,46 +116,49 @@ public class BookingServiceImpl implements BookingService {
 		return dtoPage;
 	}
 
-//	@Override
-//	@Transactional
-//	public void cancelBooking(Long bookingId, String email) {
-//
-//		Booking booking = bookingRepository.findById(bookingId)
-//				.orElseThrow(() -> new RuntimeException("Booking Not Found"));
-//
-//		if (!booking.getUser().getEmail().equals(email)) {
-//			throw new RuntimeException("Unauthorized Cancellation");
-//		}
-//
-//		if (booking.getStatus() == BookingStatus.CANCELLED) {
-//			throw new RuntimeException("Booking Already Cancelled");
-//		}
-//
-//		if (booking.getShow().getStartTime().isBefore(LocalDateTime.now())) {
-//			throw new RuntimeException("Show Already Started");
-//		}
-//
-//		double refund = calculateRefund(booking);
-//
-//		List<ShowSeat> seats = showSeatRepository.findByBookingId(bookingId);
-//		for (ShowSeat seat : seats) {
-//			seat.setStatus(SeatStatus.AVAILABLE);
-//			seat.setBooking(null);
-//			seat.setLockedAt(null);
-//		}
-//		showSeatRepository.saveAll(seats);
-//
-//		Payment payment = paymentRepository.findByBookingId(bookingId);
-//		if (payment != null) {
-//			payment.setStatus(PaymentStatus.REFUNDED);
-//			paymentRepository.save(payment);
-//		}
-//
-//		booking.setRefundAmount(refund);
-//		booking.setStatus(BookingStatus.CANCELLED);
-//
-//		bookingRepository.save(booking);
-//	}
+	@Override
+	@Transactional
+	public void cancelBooking(Long bookingId, String email) {
+
+		System.out.println("Canceling Booking...");
+		Booking booking = bookingRepository.findById(bookingId)
+				.orElseThrow(() -> new RuntimeException("Booking Not Found"));
+
+		if (!booking.getUser().getEmail().equals(email)) {
+			throw new RuntimeException("Unauthorized Cancellation");
+		}
+
+		if (booking.getStatus() == BookingStatus.CANCELLED) {
+			throw new RuntimeException("Booking Already Cancelled");
+		}
+
+		if (booking.getShow().getStartTime().isBefore(LocalDateTime.now().plusHours(4))) {
+			throw new RuntimeException("Show Can Not Be Cancel At this Time");
+		}
+
+		BigDecimal refund = calculateRefund(booking);
+
+		List<ShowSeat> seats = showSeatRepository.findByBookingId(bookingId);
+		for (ShowSeat seat : seats) {
+			seat.setStatus(SeatStatus.AVAILABLE);
+			seat.setBooking(null);
+			seat.setLockedAt(null);
+		}
+		showSeatRepository.saveAll(seats);
+
+		Payment payment = paymentRepository.findByBookingId(bookingId);
+		if (payment != null) {
+			String refundId = refundService.initiateRefund(booking, payment);
+			booking.setRefundAmount(refund);
+			booking.setStatus(BookingStatus.REFUNDED);
+			payment.setStatus(PaymentStatus.REFUNDED);
+			payment.setOrderId(refundId);
+		} else {
+			throw new RuntimeException("Payment Not Found");
+		}
+		paymentRepository.save(payment);
+		bookingRepository.save(booking);
+	}
 
 	@Override
 	public List<BookingResponseDTO> getMyBookings(String email) {
@@ -230,16 +235,14 @@ public class BookingServiceImpl implements BookingService {
 //		return dto;
 //	}
 
-//	private double calculateRefund(Booking booking) {
-//
-//		LocalDateTime showTime = booking.getShow().getStartTime();
-//		long hours = Duration.between(LocalDateTime.now(), showTime).toHours();
-//
-//		if (hours > 24)
-//			return booking.getTotalAmount();
-//		if (hours > 3)
-//			return booking.getTotalAmount() * 0.5;
-//		return 0;
-//	}
+	private BigDecimal calculateRefund(Booking booking) {
+
+		LocalDateTime showTime = booking.getShow().getStartTime();
+		long hours = Duration.between(LocalDateTime.now(), showTime).toHours();
+
+		if (hours > 24)
+			return booking.getTotalAmount();
+		return new BigDecimal(0);
+	}
 
 }

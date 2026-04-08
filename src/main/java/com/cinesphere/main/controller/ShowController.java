@@ -87,7 +87,7 @@ public class ShowController {
 	}
 
 	@DeleteMapping("id={showId}")
-	@PreAuthorize("hasRole('USER')")
+	@PreAuthorize("hasRole('ADMIN')")
 	public ResponseEntity<ApiResponse<String>> deleteShowById(@PathVariable("showId") Long id) {
 		showService.deleteShowById(id);
 		return ResponseEntity.ok(new ApiResponse<>(true, "Show Successfull Deleted", null));
@@ -96,7 +96,6 @@ public class ShowController {
 	@GetMapping("/movie/id={movieId}")
 	@PreAuthorize("hasAnyRole('USER','ADMIN')")
 	public ResponseEntity<ApiResponse<List<ShowResponseDTO>>> getShowsByMoiveId(@PathVariable Long movieId) {
-		System.out.println("aaya hai chalo yaha tho");
 		return ResponseEntity
 				.ok(new ApiResponse<>(true, "Shows Fetched Successfully", showService.getShowsByMoiveId(movieId)));
 	}

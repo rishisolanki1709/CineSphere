@@ -202,6 +202,6 @@ public class ShowServiceImpl implements ShowService {
 	@Override
 	public List<ShowResponseDTO> getShowsByMoiveId(Long movieId) {
 		Movie movie = movieRepository.findById(movieId).orElseThrow(() -> new RuntimeException("Movie Not Available"));
-		return showRepository.findByMovie(movie).stream().map(this::mapToDTO).toList();
+		return showRepository.findByMovieAndActiveShows(movie).stream().map(this::mapToDTO).toList();
 	}
 }

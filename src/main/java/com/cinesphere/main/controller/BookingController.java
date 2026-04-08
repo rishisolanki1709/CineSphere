@@ -39,17 +39,17 @@ public class BookingController {
 
 		return ResponseEntity.ok(new ApiResponse<>(true, "Booking Confirmed Successfully", dto));
 	}
-//
-//	@DeleteMapping("/cancel/{bookingId}")
-//	@PreAuthorize("hasRole('USER')")
-//	public ResponseEntity<ApiResponse<Void>> cancelBooking(@PathVariable Long bookingId,
-//			Authentication authentication) {
-//
-//		bookingService.cancelBooking(bookingId, authentication.getName());
-//
-//		return ResponseEntity.ok(new ApiResponse<>(true, "Booking Cancelled Successfully", null));
-//	}
-//
+
+	@PostMapping("/cancel/{bookingId}")
+	@PreAuthorize("hasRole('USER')")
+	public ResponseEntity<ApiResponse<Void>> cancelBooking(@PathVariable("bookingId") Long bookingId,
+			Authentication authentication) {
+
+		bookingService.cancelBooking(bookingId, authentication.getName());
+
+		return ResponseEntity.ok(new ApiResponse<>(true, "Booking Cancelled Successfully", null));
+	}
+
 	@GetMapping("/my")
 	@PreAuthorize("hasRole('USER')")
 	public ResponseEntity<ApiResponse<List<BookingResponseDTO>>> myBookings(Authentication auth) {

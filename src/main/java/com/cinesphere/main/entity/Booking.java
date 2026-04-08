@@ -40,7 +40,7 @@ public class Booking {
 	private LocalDateTime bookedAt;
 
 	private LocalDateTime cancelledAt;
-	private Double refundAmount;
+	private BigDecimal refundAmount;
 
 	@PrePersist
 	public void onCreate() {
@@ -111,11 +111,12 @@ public class Booking {
 		this.cancelledAt = cancelledAt;
 	}
 
-	public Double getRefundAmount() {
+	public BigDecimal getRefundAmount() {
 		return refundAmount;
 	}
 
-	public void setRefundAmount(Double refundAmount) {
+	public void setRefundAmount(BigDecimal refundAmount) {
 		this.refundAmount = refundAmount;
 	}
+
 }

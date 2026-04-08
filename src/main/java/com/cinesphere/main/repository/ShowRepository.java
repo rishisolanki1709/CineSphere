@@ -19,6 +19,7 @@ public interface ShowRepository extends JpaRepository<Show, Long> {
 			    WHERE s.movie.id = :movieId
 			    AND s.screen.theatre.city = :city
 			    AND s.startTime > CURRENT_TIMESTAMP
+			    AND s.status = ShowStatus.ACTIVE
 			""")
 	List<Show> findAvailableShows(@Param("movieId") Long movieId, @Param("city") String city);
 
@@ -36,7 +37,12 @@ public interface ShowRepository extends JpaRepository<Show, Long> {
 
 	@Query("SELECT COUNT(s) FROM Show s WHERE s.status='ACTIVE'")
 	long activeShows();
-	
-	List<Show> findByMovie(Movie movie);
+
+	@Query("""
+			    SELECT s FROM Show s
+			    WHERE s.movie = :movie
+			    AND s.status = ShowStatus.ACTIVE
+			""")
+	List<Show> findByMovieAndActiveShows(@Param("movie") Movie movie);
 
 }
