@@ -111,7 +111,6 @@ public class ShowServiceImpl implements ShowService {
 				ss.setPrice(dto.getRegularPrice());
 
 			showSeats.add(ss);
-			showSeats.add(ss);
 		}
 
 		pricingRepository.saveAll(List.of(sp1, sp2, sp3));

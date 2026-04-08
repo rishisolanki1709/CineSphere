@@ -5,7 +5,6 @@ import java.time.LocalDateTime;
 import java.util.List;
 
 import com.cinesphere.main.entity.BookingStatus;
-import com.cinesphere.main.entity.Seat;
 import com.cinesphere.main.entity.ShowSeat;
 
 public class BookingResponseDTO {

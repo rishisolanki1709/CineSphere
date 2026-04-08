@@ -166,20 +166,6 @@ public class BookingServiceImpl implements BookingService {
 		return bookings.stream().map(this::mapToDTO).toList();
 	}
 
-//
-//	@Override
-//	public BookingResponseDTO getBookingDetails(Long bookingId, String email) {
-//
-//		Booking booking = bookingRepository.findById(bookingId)
-//				.orElseThrow(() -> new RuntimeException("Booking not found"));
-//
-//		if (!booking.getUser().getEmail().equals(email)) {
-//			throw new RuntimeException("Unauthorized");
-//		}
-//
-//		return mapToDTO(booking);
-//	}
-//
 	private BookingResponseDTO mapToDTO(Booking booking) {
 
 		BookingResponseDTO dto = new BookingResponseDTO();
@@ -197,42 +183,6 @@ public class BookingServiceImpl implements BookingService {
 
 		return dto;
 	}
-
-//	@Override
-//	public TicketResponseDTO getTicket(Long bookingId, String email) {
-//		Booking booking = bookingRepository.findById(bookingId)
-//				.orElseThrow(() -> new RuntimeException("Booking not found"));
-//
-//		if (booking.getStatus().equals(BookingStatus.CANCELLED) || booking.getStatus().equals(BookingStatus.REFUNDED)) {
-//			throw new RuntimeException("Booking was CANCELLED");
-//		}
-//
-//		if (!booking.getUser().getEmail().equals(email)) {
-//			throw new RuntimeException("Unauthorized access");
-//		}
-//
-//		return mapToTicketDTO(booking);
-//	}
-
-//	private TicketResponseDTO mapToTicketDTO(Booking booking) {
-//
-//		TicketResponseDTO dto = new TicketResponseDTO();
-//
-//		dto.setBookingId(booking.getId());
-//		dto.setMovieName(booking.getShow().getMovie().getTitle());
-//		dto.setTheatreName(booking.getShow().getScreen().getTheatre().getName());
-//		dto.setScreenName(booking.getShow().getScreen().getScreenName());
-//		dto.setShowTime(booking.getShow().getStartTime());
-//
-//		dto.setSeats(booking.getShowSeats().stream().map(ss -> ss.getSeat().getseat() + ss.getSeat().getSeatNumber())
-//				.toList());
-//
-//		dto.setAmount(booking.getTotalAmount());
-//		dto.setStatus(booking.getStatus());
-//		dto.setBookedAt(booking.getBookedAt());
-//
-//		return dto;
-//	}
 
 	private BigDecimal calculateRefund(Booking booking) {
 
