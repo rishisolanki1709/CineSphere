@@ -33,7 +33,6 @@ public class AuthServiceImpl implements AuthService {
 				.orElseThrow(() -> new RuntimeException("User Not Found"));
 		String token = jwtUtil.generateToken(user.getEmail(), user.getRole());
 
-		System.out.println("JWT Token " + token);
 		LoginResponse response = new LoginResponse();
 		response.setToken(token);
 		response.setEmail(user.getEmail());

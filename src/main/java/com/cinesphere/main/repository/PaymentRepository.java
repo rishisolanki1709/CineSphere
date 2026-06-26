@@ -12,7 +12,7 @@ public interface PaymentRepository extends JpaRepository<Payment, Long> {
 
 	Payment findByBookingId(Long bookingId);
 
-	List<Payment> findByOrderId(String orderId);
+	Payment findByOrderId(String orderId);
 
 	List<Payment> findAllByStatusAndCreatedAtBefore(PaymentStatus status, LocalDateTime dateTime);
 }

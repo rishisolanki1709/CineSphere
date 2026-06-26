@@ -183,7 +183,7 @@ public class PaymentServiceImpl implements PaymentService {
 		booking.setStatus(BookingStatus.CONFIRMED);
 
 		// Update the Payment record associated with this booking
-		Payment payment = paymentRepository.findByOrderId(dto.getRazorpayOrderId()).get(0);
+		Payment payment = paymentRepository.findByOrderId(dto.getRazorpayOrderId());
 
 		payment.setPaymentId(dto.getRazorpayPaymentId());
 		payment.setStatus(PaymentStatus.SUCCESS);
