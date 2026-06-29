@@ -1,6 +1,6 @@
 package com.cinesphere.main.dto;
 
-public class LoginResponse {
+public class LoginResponseDTO {
 	private String token;
 	private String message;
 	private String name;

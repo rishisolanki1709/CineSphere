@@ -2,10 +2,9 @@ package com.cinesphere.main.service;
 
 import java.util.List;
 
-import com.cinesphere.main.entity.Seat;
-
+import com.cinesphere.main.dto.SeatResponseDTO;
 
 public interface SeatService {
 
-	List<Seat> getSeatsByScreenId(Long screenId);
+	List<SeatResponseDTO> getSeatsByScreenId(Long screenId);
 }

@@ -4,13 +4,34 @@ import java.time.LocalDate;
 
 import org.springframework.web.multipart.MultipartFile;
 
+import jakarta.validation.constraints.NotBlank;
+import jakarta.validation.constraints.NotNull;
+import jakarta.validation.constraints.Positive;
+import jakarta.validation.constraints.Size;
+
 public class MovieRequestDTO {
+	@NotBlank(message = "Movie title is required")
+	@Size(max = 100)
 	private String title;
+
+	@NotBlank(message = "Description is required")
+	@Size(min = 10, max = 1000)
 	private String description;
+
+	@NotBlank(message = "Language is required")
 	private String language;
+
+	@NotNull(message = "Duration is required")
+	@Positive(message = "Duration must be positive")
 	private Integer durationMinutes;
+
+	@NotBlank(message = "Genre is required")
 	private String genre;
+
+	@NotNull(message = "Release date is required")
 	private LocalDate releaseDate;
+
+	@NotNull(message = "Movie poster is required")
 	private MultipartFile image;
 
 	public String getTitle() {

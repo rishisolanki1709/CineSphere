@@ -4,7 +4,6 @@ import java.util.List;
 
 import com.cinesphere.main.dto.ScreenRequestDTO;
 import com.cinesphere.main.dto.ScreenResponseDTO;
-import com.cinesphere.main.entity.Screen;
 
 public interface ScreenService {
 
@@ -18,5 +17,5 @@ public interface ScreenService {
 
 	void editScreen(Long id, ScreenRequestDTO dto);
 
-	Screen getScreenById(Long screenId);
+	ScreenResponseDTO getScreenById(Long screenId);
 }

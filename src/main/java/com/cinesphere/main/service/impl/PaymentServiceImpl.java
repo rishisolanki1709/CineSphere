@@ -1,6 +1,7 @@
 package com.cinesphere.main.service.impl;
 
 import java.time.LocalDateTime;
+import java.util.ArrayList;
 import java.util.List;
 
 import org.springframework.data.domain.Pageable;
@@ -11,6 +12,7 @@ import org.springframework.data.domain.Page;
 import org.springframework.stereotype.Service;
 
 import com.cinesphere.main.dto.AdminPaymentResponseDTO;
+import com.cinesphere.main.dto.PaymentResponseDTO;
 import com.cinesphere.main.dto.PaymentVerificationDTO;
 import com.cinesphere.main.entity.Booking;
 import com.cinesphere.main.entity.BookingStatus;
@@ -228,8 +230,20 @@ public class PaymentServiceImpl implements PaymentService {
 	}
 
 	@Override
-	public List<Payment> getAllPayments() {
-		return paymentRepository.findAll();
+	public List<PaymentResponseDTO> getAllPayments() {
+
+		List<Payment> paymentLs = paymentRepository.findAll();
+		List<PaymentResponseDTO> list = new ArrayList<>();
+		for (Payment payment : paymentLs) {
+			list.add(mapToResponseDTO(payment));
+		}
+		return list;
+	}
+
+	private PaymentResponseDTO mapToResponseDTO(Payment payment) {
+
+		return new PaymentResponseDTO(payment.getId(), payment.getAmount(), payment.getStatus(), payment.getOrderId(),
+				payment.getPaymentId(), payment.getCreatedAt(), payment.getBooking().getId());
 	}
 
 	@Override

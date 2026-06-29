@@ -3,6 +3,8 @@ package com.cinesphere.main.service.impl;
 import java.util.List;
 
 import org.springframework.stereotype.Service;
+
+import com.cinesphere.main.dto.TheatreRequestDTO;
 import com.cinesphere.main.dto.TheatreResponseDTO;
 import com.cinesphere.main.entity.Theatre;
 import com.cinesphere.main.repository.TheatreRepository;
@@ -18,9 +20,13 @@ public class TheatreServiceImpl implements TheatreService {
 	}
 
 	@Override
-	public TheatreResponseDTO addTheatre(Theatre theatre) {
-		Theatre savedTheatre = theatreRepository.save(theatre);
-		return mapToDTO(savedTheatre);
+	public void addTheatre(TheatreRequestDTO theatre) {
+		Theatre newTheatre = new Theatre();
+		newTheatre.setName(theatre.getName());
+		newTheatre.setAddress(theatre.getAddress());
+		newTheatre.setCity(theatre.getCity());
+		newTheatre.setActive(true);
+		theatreRepository.save(newTheatre);
 	}
 
 	@Override
@@ -47,7 +53,8 @@ public class TheatreServiceImpl implements TheatreService {
 
 	@Override
 	public void updateStatus(Long id, boolean newStatus) {
-		Theatre theatre = theatreRepository.findById(id).orElseThrow(() -> new RuntimeException("Theatre not found with id: " + id));
+		Theatre theatre = theatreRepository.findById(id)
+				.orElseThrow(() -> new RuntimeException("Theatre not found with id: " + id));
 		theatre.setActive(newStatus);
 		theatreRepository.save(theatre);
 	}
@@ -58,18 +65,19 @@ public class TheatreServiceImpl implements TheatreService {
 	}
 
 	@Override
-	public TheatreResponseDTO updateTheatre(Long id, Theatre theatre) {
-		Theatre newTheatre = theatreRepository.findById(id).orElseThrow(() -> new RuntimeException("Theatre not found with id: " + id));
+	public void updateTheatre(Long id, TheatreRequestDTO theatre) {
+		Theatre newTheatre = theatreRepository.findById(id)
+				.orElseThrow(() -> new RuntimeException("Theatre not found with id: " + id));
 		newTheatre.setAddress(theatre.getAddress());
 		newTheatre.setCity(theatre.getCity());
 		newTheatre.setName(theatre.getName());
 		theatreRepository.save(newTheatre);
-		return null;
 	}
 
 	@Override
 	public TheatreResponseDTO getTheatresById(Long id) {
-		Theatre theatre = theatreRepository.findById(id).orElseThrow(() -> new RuntimeException("Theatre not found with id: " + id));;
+		Theatre theatre = theatreRepository.findById(id)
+				.orElseThrow(() -> new RuntimeException("Theatre not found with id: " + id));
 		TheatreResponseDTO dto = new TheatreResponseDTO();
 		dto.setAddress(theatre.getAddress());
 		dto.setCity(theatre.getCity());

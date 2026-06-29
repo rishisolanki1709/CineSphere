@@ -2,10 +2,18 @@ package com.cinesphere.main.dto;
 
 import java.util.List;
 
+import jakarta.validation.constraints.NotEmpty;
+import jakarta.validation.constraints.NotNull;
+import jakarta.validation.constraints.Positive;
+
 public class LockSeatDTO {
 
+	@NotNull(message = "Show ID is required")
+	@Positive(message = "Show ID must be positive")
 	private Long showId;
-	private List<Long> showSeatIds;
+
+	@NotEmpty(message = "Please select at least one seat")
+	private List<@Positive(message = "Seat ID must be positive") Long> showSeatIds;
 
 	public Long getShowId() {
 		return showId;

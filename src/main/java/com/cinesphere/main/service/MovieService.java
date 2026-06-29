@@ -4,20 +4,20 @@ import java.io.IOException;
 import java.util.List;
 
 import com.cinesphere.main.dto.MovieRequestDTO;
-import com.cinesphere.main.entity.Movie;
+import com.cinesphere.main.dto.MovieResponseDTO;
 
 public interface MovieService {
-	Movie addMovie(MovieRequestDTO movie) throws IOException;
+	void addMovie(MovieRequestDTO movie) throws IOException;
 
-	List<Movie> getAllMovies();
+	List<MovieResponseDTO> getAllMovies();
 
-	Movie findById(Long id);
+	MovieResponseDTO findById(Long id);
 
-	List<Movie> getAllActiveMovies();
+	List<MovieResponseDTO> getAllActiveMovies();
 
-	Movie updateMovie(Long id, MovieRequestDTO movieRequest) throws IOException;
+	void updateMovie(Long id, MovieRequestDTO movieRequest) throws IOException;
 
 	void deleteMovie(Long id);
 
-	List<Movie> getAllActiveMoviesByCity(String city);
+	List<MovieResponseDTO> getAllActiveMoviesByCity(String city);
 }

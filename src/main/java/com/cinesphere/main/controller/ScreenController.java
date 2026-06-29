@@ -13,11 +13,12 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
-import com.cinesphere.main.dto.ApiResponse;
+import com.cinesphere.main.dto.ApiResponseDTO;
 import com.cinesphere.main.dto.ScreenRequestDTO;
 import com.cinesphere.main.dto.ScreenResponseDTO;
-import com.cinesphere.main.entity.Screen;
 import com.cinesphere.main.service.ScreenService;
+
+import jakarta.validation.Valid;
 
 @RestController
 @RequestMapping("/api/screens")
@@ -32,40 +33,40 @@ public class ScreenController {
 	// ADMIN only
 	@PostMapping
 	@PreAuthorize("hasRole('ADMIN')")
-	public ResponseEntity<ApiResponse<Void>> addScreen(@RequestBody ScreenRequestDTO dto) {
+	public ResponseEntity<ApiResponseDTO<Void>> addScreen(@Valid @RequestBody ScreenRequestDTO dto) {
 		screenService.addScreen(dto);
-		return ResponseEntity.ok(new ApiResponse<>(true, "Screen Added Successfully", null));
+		return ResponseEntity.ok(new ApiResponseDTO<>(true, "Screen Added Successfully", null));
 	}
 
 	// USER + ADMIN
 	@GetMapping("theatre/id={theatreId}")
 	@PreAuthorize("hasAnyRole('USER', 'ADMIN')")
-	public ResponseEntity<ApiResponse<List<ScreenResponseDTO>>> getScreens(@PathVariable Long theatreId) {
+	public ResponseEntity<ApiResponseDTO<List<ScreenResponseDTO>>> getScreens(@PathVariable Long theatreId) {
 
-		return ResponseEntity.ok(
-				new ApiResponse<>(true, "Screens Fetched Successfully", screenService.getScreensByTheatre(theatreId)));
+		return ResponseEntity.ok(new ApiResponseDTO<>(true, "Screens Fetched Successfully",
+				screenService.getScreensByTheatre(theatreId)));
 	}
 
 	@DeleteMapping("id={screenId}")
 	@PreAuthorize("hasRole('ADMIN')")
-	public ResponseEntity<ApiResponse<Void>> deleteScreen(@PathVariable("screenId") Long id) {
+	public ResponseEntity<ApiResponseDTO<Void>> deleteScreen(@PathVariable("screenId") Long id) {
 		screenService.deleteScreen(id);
-		return ResponseEntity.ok(new ApiResponse<>(true, "Screen Deleted Successfully", null));
+		return ResponseEntity.ok(new ApiResponseDTO<>(true, "Screen Deleted Successfully", null));
 	}
 
 	@PutMapping("id={screenId}")
 	@PreAuthorize("hasRole('ADMIN')")
-	public ResponseEntity<ApiResponse<Void>> editScreen(@PathVariable("screenId") Long id,
-			@RequestBody ScreenRequestDTO dto) {
+	public ResponseEntity<ApiResponseDTO<Void>> editScreen(@PathVariable("screenId") Long id,
+			@Valid @RequestBody ScreenRequestDTO dto) {
 		screenService.editScreen(id, dto);
-		return ResponseEntity.ok(new ApiResponse<>(true, "Screen Added Successfully", null));
+		return ResponseEntity.ok(new ApiResponseDTO<>(true, "Screen Added Successfully", null));
 	}
 
 	@GetMapping("id={screenId}")
 	@PreAuthorize("hasAnyRole('USER', 'ADMIN')")
-	public ResponseEntity<ApiResponse<Screen>> getScreenById(@PathVariable("screenId") Long screenId) {
+	public ResponseEntity<ApiResponseDTO<ScreenResponseDTO>> getScreenById(@PathVariable("screenId") Long screenId) {
 		return ResponseEntity
-				.ok(new ApiResponse<>(true, "Screen Fetched Successfully", screenService.getScreenById(screenId)));
+				.ok(new ApiResponseDTO<>(true, "Screen Fetched Successfully", screenService.getScreenById(screenId)));
 	}
 
 }

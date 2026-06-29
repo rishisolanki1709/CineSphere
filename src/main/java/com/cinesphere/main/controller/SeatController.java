@@ -9,8 +9,8 @@ import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
-import com.cinesphere.main.dto.ApiResponse;
-import com.cinesphere.main.entity.Seat;
+import com.cinesphere.main.dto.ApiResponseDTO;
+import com.cinesphere.main.dto.SeatResponseDTO;
 import com.cinesphere.main.service.SeatService;
 
 @RestController
@@ -26,8 +26,8 @@ public class SeatController {
 	// USER + ADMIN → view seats
 	@GetMapping("/{screenId}")
 	@PreAuthorize("hasAnyRole('USER', 'ADMIN')")
-	public ResponseEntity<ApiResponse<List<Seat>>> getSeats(@PathVariable Long screenId) {
-		List<Seat> seatList= seatService.getSeatsByScreenId(screenId);
-		return ResponseEntity.ok(new ApiResponse<>(true, "Seats Fetched Successfully", seatList));
+	public ResponseEntity<ApiResponseDTO<List<SeatResponseDTO>>> getSeats(@PathVariable Long screenId) {
+		List<SeatResponseDTO> seatList = seatService.getSeatsByScreenId(screenId);
+		return ResponseEntity.ok(new ApiResponseDTO<>(true, "Seats Fetched Successfully", seatList));
 	}
 }

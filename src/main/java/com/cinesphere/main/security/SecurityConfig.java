@@ -3,8 +3,6 @@ package com.cinesphere.main.security;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
-import org.springframework.security.access.hierarchicalroles.RoleHierarchy;
-import org.springframework.security.access.hierarchicalroles.RoleHierarchyImpl;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.config.annotation.authentication.configuration.AuthenticationConfiguration;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
@@ -21,18 +19,9 @@ public class SecurityConfig {
 	private JwtAuthenticationFilter jwtAuthenticationFilter;
 
 	@Bean
-	public RoleHierarchy roleHierarchy() {
-		RoleHierarchyImpl hierarchy = new RoleHierarchyImpl();
-		hierarchy.setHierarchy("""
-				    ROLE_ADMIN > ROLE_USER
-				""");
-		return hierarchy;
-	}
-
-	@Bean
 	public SecurityFilterChain filterChain(HttpSecurity http) throws Exception {
 		http.cors(cors -> cors.configure(http)) // Enable CORS support in Security
-				.csrf(csrf -> csrf.disable()).csrf(csrf -> csrf.disable())
+				.csrf(csrf -> csrf.disable())
 				.authorizeHttpRequests(auth -> auth.requestMatchers("/api/auth/**", "/api/movies/**").permitAll()
 						.requestMatchers("/api/admin/**").hasRole("ADMIN").requestMatchers("/api/user/**")
 						.hasRole("USER").anyRequest().authenticated())

@@ -1,11 +1,13 @@
 package com.cinesphere.main.service.impl;
 
 import java.io.IOException;
+import java.util.ArrayList;
 import java.util.List;
 
 import org.springframework.stereotype.Service;
 
 import com.cinesphere.main.dto.MovieRequestDTO;
+import com.cinesphere.main.dto.MovieResponseDTO;
 import com.cinesphere.main.entity.Movie;
 import com.cinesphere.main.repository.MovieRepository;
 import com.cinesphere.main.service.MovieService;
@@ -22,7 +24,7 @@ public class MovieServiceImpl implements MovieService {
 	}
 
 	@Override
-	public Movie addMovie(MovieRequestDTO movieRequest) throws IOException {
+	public void addMovie(MovieRequestDTO movieRequest) throws IOException {
 
 		String imageUrl = imageUploadService.uploadImage(movieRequest.getImage());
 		Movie movie = new Movie();
@@ -33,26 +35,37 @@ public class MovieServiceImpl implements MovieService {
 		movie.setLanguage(movieRequest.getLanguage());
 		movie.setReleaseDate(movieRequest.getReleaseDate());
 		movie.setPosterUrl(imageUrl);
-		return movieRepository.save(movie);
+		movieRepository.save(movie);
 	}
 
 	@Override
-	public List<Movie> getAllActiveMovies() {
-		return movieRepository.findByActiveTrue();
+	public List<MovieResponseDTO> getAllActiveMovies() {
+		List<Movie> movieLs = movieRepository.findByActiveTrue();
+		List<MovieResponseDTO> list = new ArrayList<>();
+		for (Movie movie : movieLs) {
+			list.add(mapToResponse(movie));
+		}
+		return list;
 	}
 
 	@Override
-	public List<Movie> getAllMovies() {
-		return movieRepository.findAll();
+	public List<MovieResponseDTO> getAllMovies() {
+		List<Movie> movieLs = movieRepository.findAll();
+		List<MovieResponseDTO> list = new ArrayList<>();
+		for (Movie movie : movieLs) {
+			list.add(mapToResponse(movie));
+		}
+		return list;
 	}
 
 	@Override
-	public Movie findById(Long id) {
-		return movieRepository.findById(id).get();
+	public MovieResponseDTO findById(Long id) {
+		Movie movie = movieRepository.findById(id).orElseThrow(() -> new RuntimeException("Movie Not Found"));
+		return mapToResponse(movie);
 	}
 
 	@Override
-	public Movie updateMovie(Long id, MovieRequestDTO movieRequest) throws IOException {
+	public void updateMovie(Long id, MovieRequestDTO movieRequest) throws IOException {
 		String imageUrl = imageUploadService.uploadImage(movieRequest.getImage());
 		Movie movie = movieRepository.findById(id).get();
 		movie.setTitle(movieRequest.getTitle());
@@ -62,7 +75,6 @@ public class MovieServiceImpl implements MovieService {
 		movie.setLanguage(movieRequest.getLanguage());
 		movie.setReleaseDate(movieRequest.getReleaseDate());
 		movie.setPosterUrl(imageUrl);
-		return movieRepository.save(movie);
 	}
 
 	@Override
@@ -71,7 +83,19 @@ public class MovieServiceImpl implements MovieService {
 	}
 
 	@Override
-	public List<Movie> getAllActiveMoviesByCity(String city) {
-		return movieRepository.findActiveMoviesByCity(city);
+	public List<MovieResponseDTO> getAllActiveMoviesByCity(String city) {
+		List<Movie> movieLs = movieRepository.findActiveMoviesByCity(city);
+		List<MovieResponseDTO> list = new ArrayList<>();
+		for (Movie movie : movieLs) {
+			list.add(mapToResponse(movie));
+		}
+		return list;
+	}
+
+	private MovieResponseDTO mapToResponse(Movie movie) {
+
+		return new MovieResponseDTO(movie.getId(), movie.getTitle(), movie.getDescription(), movie.getLanguage(),
+				movie.getDurationMinutes(), movie.getGenre(), movie.getReleaseDate(), movie.isActive(),
+				movie.getPosterUrl());
 	}
 }

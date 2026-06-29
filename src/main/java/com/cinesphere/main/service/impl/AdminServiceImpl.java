@@ -2,6 +2,7 @@ package com.cinesphere.main.service.impl;
 
 import java.time.LocalDateTime;
 import java.time.LocalTime;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -11,6 +12,7 @@ import com.cinesphere.main.dto.AdminDashboardResponseDTO;
 import com.cinesphere.main.dto.MovieStatsDTO;
 import com.cinesphere.main.dto.RevenueDTO;
 import com.cinesphere.main.dto.StatusCountDTO;
+import com.cinesphere.main.dto.UserResponseDTO;
 import com.cinesphere.main.entity.User;
 import com.cinesphere.main.repository.*;
 import com.cinesphere.main.service.AdminService;
@@ -56,8 +58,19 @@ public class AdminServiceImpl implements AdminService {
 	}
 
 	@Override
-	public List<User> getAllUsers() {
-		return userRepository.findByRole("ROLE_USER");
+	public List<UserResponseDTO> getAllUsers() {
+		List<User> userLs = userRepository.findByRole("ROLE_USER");
+		List<UserResponseDTO> list = new ArrayList<>();
+		for (User user : userLs) {
+			UserResponseDTO res = new UserResponseDTO();
+			res.setId(user.getId());
+			res.setName(user.getName());
+			res.setEmail(user.getEmail());
+			res.setPhone(user.getPhone());
+			res.setCreatedAt(user.getCreatedAt());
+			list.add(res);
+		}
+		return list;
 	}
 
 	private LocalDateTime calculateStartDate(String range) {

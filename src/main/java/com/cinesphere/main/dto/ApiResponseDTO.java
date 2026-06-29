@@ -2,13 +2,13 @@ package com.cinesphere.main.dto;
 
 import java.time.LocalDateTime;
 
-public class ApiResponse<T> {
+public class ApiResponseDTO<T> {
 	private boolean success;
 	private String message;
 	private T data;
 	private LocalDateTime timestamp;
 
-	public ApiResponse(boolean success, String message, T data) {
+	public ApiResponseDTO(boolean success, String message, T data) {
 		this.success = success;
 		this.message = message;
 		this.data = data;

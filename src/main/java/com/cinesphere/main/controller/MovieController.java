@@ -14,10 +14,12 @@ import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
-import com.cinesphere.main.dto.ApiResponse;
+import com.cinesphere.main.dto.ApiResponseDTO;
 import com.cinesphere.main.dto.MovieRequestDTO;
-import com.cinesphere.main.entity.Movie;
+import com.cinesphere.main.dto.MovieResponseDTO;
 import com.cinesphere.main.service.MovieService;
+
+import jakarta.validation.Valid;
 
 @RestController
 @RequestMapping("/api/movies")
@@ -30,51 +32,52 @@ public class MovieController {
 
 	@PostMapping
 	@PreAuthorize("hasRole('ADMIN')")
-	public ResponseEntity<ApiResponse<Movie>> addMovie(@ModelAttribute MovieRequestDTO movieRequest)
+	public ResponseEntity<ApiResponseDTO<Void>> addMovie(@Valid @ModelAttribute MovieRequestDTO movieRequest)
 			throws IOException {
-		return ResponseEntity
-				.ok(new ApiResponse<>(true, "Movie Added SuccessFully", movieService.addMovie(movieRequest)));
+		return ResponseEntity.ok(new ApiResponseDTO<>(true, "Movie Added SuccessFully", null));
 	}
 
 	@GetMapping("id={id}")
 	@PreAuthorize("hasRole('ADMIN')")
-	public ResponseEntity<ApiResponse<Movie>> getMovieById(@PathVariable("id") Long id) {
-		return ResponseEntity.ok(new ApiResponse<Movie>(true, "Movie Fetched Successfully", movieService.findById(id)));
+	public ResponseEntity<ApiResponseDTO<MovieResponseDTO>> getMovieById(@PathVariable("id") Long id) {
+		return ResponseEntity.ok(
+				new ApiResponseDTO<MovieResponseDTO>(true, "Movie Fetched Successfully", movieService.findById(id)));
 	}
 
 	@PutMapping("id={id}")
 	@PreAuthorize("hasRole('ADMIN')")
-	public ResponseEntity<ApiResponse<Movie>> updateMovieById(@PathVariable Long id,
-			@ModelAttribute MovieRequestDTO movieRequest) throws IOException {
-		return ResponseEntity.ok(
-				new ApiResponse<Movie>(true, "Movie Fetched Successfully", movieService.updateMovie(id, movieRequest)));
+	public ResponseEntity<ApiResponseDTO<Void>> updateMovieById(@PathVariable Long id,
+			@Valid @ModelAttribute MovieRequestDTO movieRequest) throws IOException {
+		return ResponseEntity.ok(new ApiResponseDTO<>(true, "Movie Fetched Successfully", null));
 	}
 
 	@GetMapping("all")
-	public ResponseEntity<ApiResponse<List<Movie>>> getMovies() {
-		return ResponseEntity.ok(new ApiResponse<>(true, "Movies Fetched Successfully", movieService.getAllMovies()));
+	public ResponseEntity<ApiResponseDTO<List<MovieResponseDTO>>> getMovies() {
+		return ResponseEntity
+				.ok(new ApiResponseDTO<>(true, "Movies Fetched Successfully", movieService.getAllMovies()));
 	}
 
 	@GetMapping("/all-active")
-	public ResponseEntity<ApiResponse<List<Movie>>> getActiveMovies() {
+	public ResponseEntity<ApiResponseDTO<List<MovieResponseDTO>>> getActiveMovies() {
 		return ResponseEntity
-				.ok(new ApiResponse<>(true, "Movies Fetched Successfully", movieService.getAllActiveMovies()));
+				.ok(new ApiResponseDTO<>(true, "Movies Fetched Successfully", movieService.getAllActiveMovies()));
 	}
 
 	@GetMapping("city={city}")
-	public ResponseEntity<ApiResponse<List<Movie>>> getActiveMoviesByCity(@PathVariable("city") String city) {
+	public ResponseEntity<ApiResponseDTO<List<MovieResponseDTO>>> getActiveMoviesByCity(
+			@PathVariable("city") String city) {
 		if (city == null || city.isEmpty() || city.equals("All")) {
 			return ResponseEntity
-					.ok(new ApiResponse<>(true, "Movies Fetched Successfully", movieService.getAllMovies()));
+					.ok(new ApiResponseDTO<>(true, "Movies Fetched Successfully", movieService.getAllMovies()));
 
 		}
 		return ResponseEntity.ok(
-				new ApiResponse<>(true, "Movies Fetched Successfully", movieService.getAllActiveMoviesByCity(city)));
+				new ApiResponseDTO<>(true, "Movies Fetched Successfully", movieService.getAllActiveMoviesByCity(city)));
 	}
 
 	@DeleteMapping("id={id}")
-	public ResponseEntity<ApiResponse<Void>> deleteMovies(@PathVariable Long id) {
+	public ResponseEntity<ApiResponseDTO<Void>> deleteMovies(@PathVariable Long id) {
 		movieService.deleteMovie(id);
-		return ResponseEntity.ok(new ApiResponse<>(true, "Movie Deleted Successfully", null));
+		return ResponseEntity.ok(new ApiResponseDTO<>(true, "Movie Deleted Successfully", null));
 	}
 }

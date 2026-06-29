@@ -3,7 +3,7 @@ package com.cinesphere.main.service.impl;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Service;
 
-import com.cinesphere.main.dto.UserRegisterRequest;
+import com.cinesphere.main.dto.UserRegisterRequestDTO;
 import com.cinesphere.main.entity.User;
 import com.cinesphere.main.exception.EmailAlreadyExistsException;
 import com.cinesphere.main.repository.UserRepository;
@@ -21,7 +21,7 @@ public class UserServiceImpl implements UserService {
 	}
 
 	@Override
-	public void registerUser(UserRegisterRequest request) {
+	public void registerUser(UserRegisterRequestDTO request) {
 		if (userRepository.existsByEmail(request.getEmail())) {
 			throw new EmailAlreadyExistsException("Email already registered");
 		}
@@ -37,7 +37,7 @@ public class UserServiceImpl implements UserService {
 	}
 
 	@Override
-	public void createAdmin(UserRegisterRequest request) {
+	public void createAdmin(UserRegisterRequestDTO request) {
 		User user = new User();
 		user.setName(request.getName());
 		user.setEmail(request.getEmail());

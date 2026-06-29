@@ -35,7 +35,7 @@ public class User {
 	private LocalDateTime createdAt;
 
 	@Column(nullable = false)
-	private String role; // ROLE_USER, ROLE_ADMIN
+	private String role;
 
 	@PrePersist
 	public void onCreate() {

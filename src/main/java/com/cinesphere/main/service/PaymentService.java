@@ -6,8 +6,8 @@ import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 
 import com.cinesphere.main.dto.AdminPaymentResponseDTO;
+import com.cinesphere.main.dto.PaymentResponseDTO;
 import com.cinesphere.main.dto.PaymentVerificationDTO;
-import com.cinesphere.main.entity.Payment;
 
 public interface PaymentService {
 	public void refundBooking(Long bookingId, String name);
@@ -18,7 +18,7 @@ public interface PaymentService {
 
 	public void verifyAndConfirmPayment(Long bookingId, PaymentVerificationDTO verificationDTO);
 
-	public List<Payment> getAllPayments();
+	public List<PaymentResponseDTO> getAllPayments();
 
 	Page<AdminPaymentResponseDTO> findAll(Pageable pageable);
 

@@ -15,13 +15,15 @@ import org.springframework.web.bind.annotation.RestController;
 import com.cinesphere.main.dto.AdminBookingSummaryDTO;
 import com.cinesphere.main.dto.AdminDashboardResponseDTO;
 import com.cinesphere.main.dto.AdminPaymentResponseDTO;
-import com.cinesphere.main.dto.ApiResponse;
-import com.cinesphere.main.dto.UserRegisterRequest;
-import com.cinesphere.main.entity.User;
+import com.cinesphere.main.dto.ApiResponseDTO;
+import com.cinesphere.main.dto.UserRegisterRequestDTO;
+import com.cinesphere.main.dto.UserResponseDTO;
 import com.cinesphere.main.service.AdminService;
 import com.cinesphere.main.service.BookingService;
 import com.cinesphere.main.service.PaymentService;
 import com.cinesphere.main.service.UserService;
+
+import jakarta.validation.Valid;
 
 @RestController
 @RequestMapping("/api/admin")
@@ -42,35 +44,35 @@ public class AdminController {
 	}
 
 	@PostMapping("/create-admin")
-	public String createAdmin(@RequestBody UserRegisterRequest request) {
+	public String createAdmin(@Valid @RequestBody UserRegisterRequestDTO request) {
 		userService.createAdmin(request);
 		return "Admin Created Successfully";
 	}
 
 	@GetMapping("/dashboard")
-	public ResponseEntity<ApiResponse<AdminDashboardResponseDTO>> dashboard(
+	public ResponseEntity<ApiResponseDTO<AdminDashboardResponseDTO>> dashboard(
 			@RequestParam(defaultValue = "overall") String range) {
-		return ResponseEntity.ok(new ApiResponse<AdminDashboardResponseDTO>(true, "Details Fetched Successfully",
+		return ResponseEntity.ok(new ApiResponseDTO<AdminDashboardResponseDTO>(true, "Details Fetched Successfully",
 				adminService.getDashboard(range)));
 	}
 
 	@GetMapping("users")
-	public ResponseEntity<ApiResponse<List<User>>> getAllUserDetails() {
-		return ResponseEntity
-				.ok(new ApiResponse<List<User>>(true, "User Details Fetched Successfully", adminService.getAllUsers()));
+	public ResponseEntity<ApiResponseDTO<List<UserResponseDTO>>> getAllUserDetails() {
+		return ResponseEntity.ok(new ApiResponseDTO<List<UserResponseDTO>>(true, "User Details Fetched Successfully",
+				adminService.getAllUsers()));
 	}
 
 	@GetMapping("/bookings")
-	public ResponseEntity<ApiResponse<Page<AdminBookingSummaryDTO>>> getAllBookings(Pageable pageable) {
+	public ResponseEntity<ApiResponseDTO<Page<AdminBookingSummaryDTO>>> getAllBookings(Pageable pageable) {
 		// Returns bookings sorted by newest first by default if configured
-		return ResponseEntity.ok(new ApiResponse<Page<AdminBookingSummaryDTO>>(true, "Bookings Fetched Successfully",
+		return ResponseEntity.ok(new ApiResponseDTO<Page<AdminBookingSummaryDTO>>(true, "Bookings Fetched Successfully",
 				bookingService.findAll(pageable)));
 	}
 
 	@GetMapping("/payments")
-	public ResponseEntity<ApiResponse<Page<AdminPaymentResponseDTO>>> getAllPayments(Pageable pageable) {
-		return ResponseEntity.ok(new ApiResponse<Page<AdminPaymentResponseDTO>>(true, "Payments Fetched Successfully",
-				paymentService.findAll(pageable)));
+	public ResponseEntity<ApiResponseDTO<Page<AdminPaymentResponseDTO>>> getAllPayments(Pageable pageable) {
+		return ResponseEntity.ok(new ApiResponseDTO<Page<AdminPaymentResponseDTO>>(true,
+				"Payments Fetched Successfully", paymentService.findAll(pageable)));
 	}
 
 }

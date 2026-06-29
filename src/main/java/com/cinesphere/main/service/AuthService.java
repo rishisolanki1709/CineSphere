@@ -1,8 +1,8 @@
 package com.cinesphere.main.service;
 
-import com.cinesphere.main.dto.LoginRequest;
-import com.cinesphere.main.dto.LoginResponse;
+import com.cinesphere.main.dto.LoginRequestDTO;
+import com.cinesphere.main.dto.LoginResponseDTO;
 
 public interface AuthService {
-	public LoginResponse login(LoginRequest request);
+	public LoginResponseDTO login(LoginRequestDTO request);
 }

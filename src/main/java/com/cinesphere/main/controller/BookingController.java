@@ -12,10 +12,12 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
-import com.cinesphere.main.dto.ApiResponse;
+import com.cinesphere.main.dto.ApiResponseDTO;
 import com.cinesphere.main.dto.BookingRequestDTO;
 import com.cinesphere.main.dto.BookingResponseDTO;
 import com.cinesphere.main.service.BookingService;
+
+import jakarta.validation.Valid;
 
 @RestController
 @RequestMapping("/api/bookings")
@@ -29,32 +31,32 @@ public class BookingController {
 
 	@PostMapping("/confirm")
 	@PreAuthorize("hasRole('USER')")
-	public ResponseEntity<ApiResponse<BookingResponseDTO>> confirmBooking(@RequestBody BookingRequestDTO request,
+	public ResponseEntity<ApiResponseDTO<BookingResponseDTO>> confirmBooking(@Valid @RequestBody BookingRequestDTO request,
 			Authentication authentication) {
 
 		BookingResponseDTO dto = bookingService.confirmBooking(request.getShowId(), request.getShowSeatIds(),
 				authentication.getName());
 
-		return ResponseEntity.ok(new ApiResponse<>(true, "Booking Confirmed Successfully", dto));
+		return ResponseEntity.ok(new ApiResponseDTO<>(true, "Booking Confirmed Successfully", dto));
 	}
 
 	@PostMapping("/cancel/{bookingId}")
 	@PreAuthorize("hasRole('USER')")
-	public ResponseEntity<ApiResponse<Void>> cancelBooking(@PathVariable("bookingId") Long bookingId,
+	public ResponseEntity<ApiResponseDTO<Void>> cancelBooking(@PathVariable("bookingId") Long bookingId,
 			Authentication authentication) {
 
 		bookingService.cancelBooking(bookingId, authentication.getName());
 
-		return ResponseEntity.ok(new ApiResponse<>(true, "Booking Cancelled Successfully", null));
+		return ResponseEntity.ok(new ApiResponseDTO<>(true, "Booking Cancelled Successfully", null));
 	}
 
 	@GetMapping("/my")
 	@PreAuthorize("hasRole('USER')")
-	public ResponseEntity<ApiResponse<List<BookingResponseDTO>>> myBookings(Authentication auth) {
+	public ResponseEntity<ApiResponseDTO<List<BookingResponseDTO>>> myBookings(Authentication auth) {
 
 		List<BookingResponseDTO> bookings = bookingService.getMyBookings(auth.getName());
 
-		return ResponseEntity.ok(new ApiResponse<>(true, "Bookings Fetched Successfully", bookings));
+		return ResponseEntity.ok(new ApiResponseDTO<>(true, "Bookings Fetched Successfully", bookings));
 	}
 
 }

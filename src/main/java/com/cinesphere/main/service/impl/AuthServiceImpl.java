@@ -5,8 +5,8 @@ import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.stereotype.Service;
 
-import com.cinesphere.main.dto.LoginRequest;
-import com.cinesphere.main.dto.LoginResponse;
+import com.cinesphere.main.dto.LoginRequestDTO;
+import com.cinesphere.main.dto.LoginResponseDTO;
 import com.cinesphere.main.entity.User;
 import com.cinesphere.main.repository.UserRepository;
 import com.cinesphere.main.security.JwtUtil;
@@ -25,7 +25,7 @@ public class AuthServiceImpl implements AuthService {
 	UserRepository userRepository;
 
 	@Override
-	public LoginResponse login(LoginRequest request) {
+	public LoginResponseDTO login(LoginRequestDTO request) {
 		authenticationManager
 				.authenticate(new UsernamePasswordAuthenticationToken(request.getEmail(), request.getPassword()));
 
@@ -33,7 +33,7 @@ public class AuthServiceImpl implements AuthService {
 				.orElseThrow(() -> new RuntimeException("User Not Found"));
 		String token = jwtUtil.generateToken(user.getEmail(), user.getRole());
 
-		LoginResponse response = new LoginResponse();
+		LoginResponseDTO response = new LoginResponseDTO();
 		response.setToken(token);
 		response.setEmail(user.getEmail());
 		response.setName(user.getName());

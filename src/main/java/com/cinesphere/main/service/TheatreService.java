@@ -2,11 +2,13 @@ package com.cinesphere.main.service;
 
 import java.util.List;
 
+import com.cinesphere.main.dto.TheatreRequestDTO;
 import com.cinesphere.main.dto.TheatreResponseDTO;
-import com.cinesphere.main.entity.Theatre;
+
+import jakarta.validation.Valid;
 
 public interface TheatreService {
-	TheatreResponseDTO addTheatre(Theatre theatre);
+	void addTheatre(@Valid TheatreRequestDTO theatre);
 
 	List<TheatreResponseDTO> getTheatresByCity(String city);
 
@@ -16,7 +18,7 @@ public interface TheatreService {
 
 	void deleteTheatre(Long id);
 
-	TheatreResponseDTO updateTheatre(Long id, Theatre theatre);
+	void updateTheatre(Long id, @Valid TheatreRequestDTO theatre);
 
 	TheatreResponseDTO getTheatresById(Long id);
 

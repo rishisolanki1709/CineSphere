@@ -11,10 +11,8 @@ import com.cinesphere.main.dto.ScreenResponseDTO;
 import com.cinesphere.main.entity.Screen;
 import com.cinesphere.main.entity.Seat;
 import com.cinesphere.main.entity.SeatStatus;
-import com.cinesphere.main.entity.SeatType;
 import com.cinesphere.main.entity.Theatre;
 import com.cinesphere.main.repository.ScreenRepository;
-import com.cinesphere.main.repository.SeatRepository;
 import com.cinesphere.main.repository.TheatreRepository;
 import com.cinesphere.main.service.ScreenService;
 
@@ -23,16 +21,12 @@ import jakarta.transaction.Transactional;
 @Service
 public class ScreenServiceImpl implements ScreenService {
 
-	private final SeatRepository seatRepository;
-
 	private final ScreenRepository screenRepository;
 	private final TheatreRepository theatreRepository;
 
-	public ScreenServiceImpl(ScreenRepository screenRepository, TheatreRepository theatreRepository,
-			SeatRepository seatRepository) {
+	public ScreenServiceImpl(ScreenRepository screenRepository, TheatreRepository theatreRepository) {
 		this.screenRepository = screenRepository;
 		this.theatreRepository = theatreRepository;
-		this.seatRepository = seatRepository;
 	}
 
 	@Override
@@ -58,7 +52,7 @@ public class ScreenServiceImpl implements ScreenService {
 			seat.setColIndex(seatDto.getColIndex()); // Grid position
 
 			// Convert String from DTO to your Enum
-			seat.setSeatType(SeatType.valueOf(seatDto.getSeatType()));
+			seat.setSeatType(seatDto.getSeatType());
 			seat.setStatus(SeatStatus.AVAILABLE); // Default status
 
 			// Link Seat to Screen
@@ -112,7 +106,7 @@ public class ScreenServiceImpl implements ScreenService {
 			Seat seat = new Seat();
 			seat.setRowIndex(s.getRowIndex());
 			seat.setColIndex(s.getColIndex());
-			seat.setSeatType(SeatType.valueOf(s.getSeatType()));
+			seat.setSeatType(s.getSeatType());
 			seat.setStatus(SeatStatus.AVAILABLE);
 			seat.setScreen(screen);
 			screen.getSeats().add(seat);
@@ -131,7 +125,7 @@ public class ScreenServiceImpl implements ScreenService {
 			Seat seat = new Seat();
 			seat.setRowIndex(s.getRowIndex());
 			seat.setColIndex(s.getColIndex());
-			seat.setSeatType(SeatType.valueOf(s.getSeatType()));
+			seat.setSeatType(s.getSeatType());
 			seat.setStatus(SeatStatus.AVAILABLE);
 			seat.setScreen(screen);
 			screen.getSeats().add(seat);
@@ -142,9 +136,14 @@ public class ScreenServiceImpl implements ScreenService {
 	}
 
 	@Override
-	public Screen getScreenById(Long screenId) {
+	public ScreenResponseDTO getScreenById(Long screenId) {
 		Screen screen = screenRepository.findById(screenId).orElseThrow(() -> new RuntimeException("Screen Not Found"));
-		screen.setSeats(seatRepository.findByScreenId(screenId));
-		return screen;
+		ScreenResponseDTO res = new ScreenResponseDTO();
+		res.setId(screenId);
+		res.setScreenName(screen.getScreenName());
+		res.setTheatreId(screen.getTheatre().getId());
+		res.setTheatreName(screen.getTheatre().getName());
+		res.setTotalSeats(screen.getTotalSeats());
+		return res;
 	}
 }

@@ -1,6 +1,6 @@
 package com.cinesphere.main.dto;
 
-public class UserRegisterResponse {
+public class UserRegisterResponseDTO {
 	private String message;
 
 	public String getMessage() {

@@ -2,19 +2,49 @@ package com.cinesphere.main.dto;
 
 import java.util.List;
 
+import com.cinesphere.main.entity.SeatType;
+
+import jakarta.validation.Valid;
+import jakarta.validation.constraints.NotBlank;
+import jakarta.validation.constraints.NotEmpty;
+import jakarta.validation.constraints.NotNull;
+import jakarta.validation.constraints.Pattern;
+import jakarta.validation.constraints.Positive;
+import jakarta.validation.constraints.PositiveOrZero;
+
 public class ScreenRequestDTO {
+	@NotBlank(message = "Screen name is required")
 	private String screenName;
+
+	@NotNull(message = "Theatre ID is required")
+	@Positive(message = "Invalid theatre ID")
 	private Long theatreId;
+
 	private Integer maxRows;
+
 	private Integer maxCols;
+
+	@NotEmpty(message = "Seat layout cannot be empty")
+	@Valid
 	private List<SeatRequestDTO> seats;
 
 	public static class SeatRequestDTO {
-		private String seatRow; // "A", "B"
-		private Integer seatNumber; // 1, 2
-		private Integer rowIndex; // 0 (for the UI grid)
-		private Integer colIndex; // 0 (for the UI grid)
-		private String seatType; // "REGULAR", "PREMIUM", "VIP"
+		@NotBlank(message = "Seat row is required")
+		@Pattern(regexp = "^[A-Z]+$", message = "Seat row must contain only uppercase letters")
+		private String seatRow;
+
+		@NotNull
+		@Positive
+		private Integer seatNumber;
+
+		@PositiveOrZero
+		private Integer rowIndex;
+
+		@PositiveOrZero
+		private Integer colIndex;
+
+		@NotNull
+		private SeatType seatType; // "REGULAR", "PREMIUM", "VIP"
 
 		public String getSeatRow() {
 			return seatRow;
@@ -48,11 +78,11 @@ public class ScreenRequestDTO {
 			this.colIndex = colIndex;
 		}
 
-		public String getSeatType() {
+		public SeatType getSeatType() {
 			return seatType;
 		}
 
-		public void setSeatType(String seatType) {
+		public void setSeatType(SeatType seatType) {
 			this.seatType = seatType;
 		}
 

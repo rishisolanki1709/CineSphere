@@ -13,10 +13,12 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
-import com.cinesphere.main.dto.ApiResponse;
+import com.cinesphere.main.dto.ApiResponseDTO;
+import com.cinesphere.main.dto.TheatreRequestDTO;
 import com.cinesphere.main.dto.TheatreResponseDTO;
-import com.cinesphere.main.entity.Theatre;
 import com.cinesphere.main.service.TheatreService;
+
+import jakarta.validation.Valid;
 
 @RestController
 @RequestMapping("/api/theatres")
@@ -30,52 +32,53 @@ public class TheatreController {
 
 	@PostMapping
 	@PreAuthorize("hasRole('ADMIN')")
-	public ResponseEntity<ApiResponse<TheatreResponseDTO>> addTheatre(@RequestBody Theatre theatre) {
-		TheatreResponseDTO dto = theatreService.addTheatre(theatre);
-		return ResponseEntity.ok(new ApiResponse<>(true, "Theatre Added Successfully", dto));
+	public ResponseEntity<ApiResponseDTO<Void>> addTheatre(@Valid @RequestBody TheatreRequestDTO theatre) {
+		theatreService.addTheatre(theatre);
+		return ResponseEntity.ok(new ApiResponseDTO<>(true, "Theatre Added Successfully", null));
 	}
-	
+
 	@PutMapping("/edit/id={id}")
 	@PreAuthorize("hasRole('ADMIN')")
-	public ResponseEntity<ApiResponse<TheatreResponseDTO>> updateTheatre(@PathVariable("id") Long id,  @RequestBody Theatre theatre) {
-		TheatreResponseDTO dto = theatreService.updateTheatre(id, theatre);
-		return ResponseEntity.ok(new ApiResponse<>(true, "Theatre Updated Successfully", dto));
+	public ResponseEntity<ApiResponseDTO<TheatreResponseDTO>> updateTheatre(@PathVariable("id") Long id,
+			@Valid @RequestBody TheatreRequestDTO theatre) {
+		theatreService.updateTheatre(id, theatre);
+		return ResponseEntity.ok(new ApiResponseDTO<>(true, "Theatre Updated Successfully", null));
 	}
 
 	@GetMapping("city={city}")
 	@PreAuthorize("hasAnyRole('USER', 'ADMIN')")
-	public ResponseEntity<ApiResponse<List<TheatreResponseDTO>>> getTheatresByCity(@PathVariable String city) {
+	public ResponseEntity<ApiResponseDTO<List<TheatreResponseDTO>>> getTheatresByCity(@PathVariable String city) {
 		List<TheatreResponseDTO> dto = theatreService.getTheatresByCity(city);
-		return ResponseEntity.ok(new ApiResponse<>(true, "Theatres Fetched Successfully", dto));
+		return ResponseEntity.ok(new ApiResponseDTO<>(true, "Theatres Fetched Successfully", dto));
 	}
-	
+
 	@GetMapping("id={id}")
-	public ResponseEntity<ApiResponse<TheatreResponseDTO>> getTheatresById(@PathVariable Long id) {
+	public ResponseEntity<ApiResponseDTO<TheatreResponseDTO>> getTheatresById(@PathVariable Long id) {
 		System.out.println(id);
 		TheatreResponseDTO dto = theatreService.getTheatresById(id);
-		return ResponseEntity.ok(new ApiResponse<>(true, "Theatres Fetched Successfully", dto));
+		return ResponseEntity.ok(new ApiResponseDTO<>(true, "Theatres Fetched Successfully", dto));
 	}
 
 	@GetMapping("/all")
 	@PreAuthorize("hasAnyRole('USER', 'ADMIN')")
-	public ResponseEntity<ApiResponse<List<TheatreResponseDTO>>> getAllTheatres() {
+	public ResponseEntity<ApiResponseDTO<List<TheatreResponseDTO>>> getAllTheatres() {
 		List<TheatreResponseDTO> dto = theatreService.getAllTheatres();
-		return ResponseEntity.ok(new ApiResponse<>(true, "Theatres Fetched Successfully", dto));
+		return ResponseEntity.ok(new ApiResponseDTO<>(true, "Theatres Fetched Successfully", dto));
 	}
 
 	@PutMapping("/id={id}/status={newStatus}")
 	@PreAuthorize("hasRole('ADMIN')")
-	public ResponseEntity<ApiResponse<Void>> updateTheatreStatus(@PathVariable("id") Long id,
+	public ResponseEntity<ApiResponseDTO<Void>> updateTheatreStatus(@PathVariable("id") Long id,
 			@PathVariable("newStatus") boolean newStatus) {
 		theatreService.updateStatus(id, newStatus);
-		return ResponseEntity.ok(new ApiResponse<>(true, "Theatre Status Changed Successfully", null));
+		return ResponseEntity.ok(new ApiResponseDTO<>(true, "Theatre Status Changed Successfully", null));
 	}
-	
+
 	@DeleteMapping("id={id}")
 	@PreAuthorize("hasRole('ADMIN')")
-	public ResponseEntity<ApiResponse<Void>> deleteTheatre(@PathVariable Long id){
+	public ResponseEntity<ApiResponseDTO<Void>> deleteTheatre(@PathVariable Long id) {
 		theatreService.deleteTheatre(id);
-		return ResponseEntity.ok(new ApiResponse<>(true, "Theatre Deleted Successfully", null));
+		return ResponseEntity.ok(new ApiResponseDTO<>(true, "Theatre Deleted Successfully", null));
 	}
-	
+
 }

@@ -73,7 +73,6 @@ public class BookingServiceImpl implements BookingService {
 			if (seat.getLockedAt().plusMinutes(5).isBefore(LocalDateTime.now())) {
 				throw new RuntimeException("Seat Lock Expired");
 			}
-			System.out.println("Total Amount : " + totalAmount);
 		}
 
 		Booking booking = new Booking();

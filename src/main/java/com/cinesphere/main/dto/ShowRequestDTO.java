@@ -5,15 +5,32 @@ import java.time.LocalDateTime;
 
 import com.fasterxml.jackson.annotation.JsonFormat;
 
+import jakarta.validation.constraints.NotNull;
+import jakarta.validation.constraints.Positive;
+
 public class ShowRequestDTO {
+	@NotNull
+	@Positive
 	private Long movieId;
+
+	@NotNull
+	@Positive
 	private Long screenId;
+
+	@NotNull(message = "Start time is required")
 	@JsonFormat(pattern = "yyyy-MM-dd'T'HH:mm")
 	private LocalDateTime startTime;
 
-	// Pricing for the different levels we designed in the Layout
+	@NotNull
+	@Positive
 	private BigDecimal vipPrice;
+
+	@NotNull
+	@Positive
 	private BigDecimal premiumPrice;
+
+	@NotNull
+	@Positive
 	private BigDecimal regularPrice;
 
 	public Long getMovieId() {

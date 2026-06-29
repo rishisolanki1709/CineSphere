@@ -12,10 +12,12 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
-import com.cinesphere.main.dto.ApiResponse;
+import com.cinesphere.main.dto.ApiResponseDTO;
+import com.cinesphere.main.dto.PaymentResponseDTO;
 import com.cinesphere.main.dto.PaymentVerificationDTO;
-import com.cinesphere.main.entity.Payment;
 import com.cinesphere.main.service.PaymentService;
+
+import jakarta.validation.Valid;
 
 @RestController
 @RequestMapping("/api/payments")
@@ -29,47 +31,47 @@ public class PaymentController {
 
 	@PostMapping("/refund/{bookingId}")
 	@PreAuthorize("hasAnyRole('USER', 'ADMIN')")
-	public ResponseEntity<ApiResponse<String>> refund(@PathVariable Long bookingId, Authentication authentication) {
+	public ResponseEntity<ApiResponseDTO<String>> refund(@PathVariable Long bookingId, Authentication authentication) {
 
 		paymentService.refundBooking(bookingId, authentication.getName());
-		return ResponseEntity.ok(new ApiResponse<>(true, "Refund Successful", null));
+		return ResponseEntity.ok(new ApiResponseDTO<>(true, "Refund Successful", null));
 	}
 
 	@PostMapping("/create-order/{bookingId}")
 	@PreAuthorize("hasAnyRole('USER', 'ADMIN')")
-	public ResponseEntity<ApiResponse<String>> createOrder(@PathVariable Long bookingId, Authentication auth)
+	public ResponseEntity<ApiResponseDTO<String>> createOrder(@PathVariable Long bookingId, Authentication auth)
 			throws Exception {
 
 		String orderId = paymentService.createPaymentOrder(bookingId, auth.getName());
 
-		return ResponseEntity.ok(new ApiResponse<>(true, "Order Created", orderId));
+		return ResponseEntity.ok(new ApiResponseDTO<>(true, "Order Created", orderId));
 	}
 
 	@PostMapping("/failed/{paymentId}")
 	@PreAuthorize("hasAnyRole('USER', 'ADMIN')")
-	public ResponseEntity<ApiResponse<String>> failed(@PathVariable Long paymentId) {
+	public ResponseEntity<ApiResponseDTO<String>> failed(@PathVariable Long paymentId) {
 
 		paymentService.markPaymentFailed(paymentId);
 
-		return ResponseEntity.ok(new ApiResponse<>(true, "Payment failed", null));
+		return ResponseEntity.ok(new ApiResponseDTO<>(true, "Payment failed", null));
 	}
 
 	@PostMapping("/verify/{bookingId}")
 	@PreAuthorize("hasAnyRole('USER', 'ADMIN')")
-	public ResponseEntity<ApiResponse<String>> verifyPayment(@PathVariable Long bookingId,
-			@RequestBody PaymentVerificationDTO verificationDTO) {
+	public ResponseEntity<ApiResponseDTO<String>> verifyPayment(@PathVariable Long bookingId,
+			@Valid @RequestBody PaymentVerificationDTO verificationDTO) {
 
 		paymentService.verifyAndConfirmPayment(bookingId, verificationDTO);
 
-		return ResponseEntity.ok(new ApiResponse<>(true, "Payment Verified. Booking Confirmed!", null));
+		return ResponseEntity.ok(new ApiResponseDTO<>(true, "Payment Verified. Booking Confirmed!", null));
 	}
 
 	@GetMapping("all")
 	@PreAuthorize("hasRole('ADMIN')")
-	public ResponseEntity<ApiResponse<List<Payment>>> getAllPayments() {
+	public ResponseEntity<ApiResponseDTO<List<PaymentResponseDTO>>> getAllPayments() {
 
-		return ResponseEntity
-				.ok(new ApiResponse<>(true, "Payment Fetched Successfully", paymentService.getAllPayments()));
+		return ResponseEntity.ok(new ApiResponseDTO<List<PaymentResponseDTO>>(true, "Payment Fetched Successfully",
+				paymentService.getAllPayments()));
 	}
 
 }

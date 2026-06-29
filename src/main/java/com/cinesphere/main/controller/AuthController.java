@@ -8,13 +8,15 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
-import com.cinesphere.main.dto.ApiResponse;
-import com.cinesphere.main.dto.LoginRequest;
-import com.cinesphere.main.dto.LoginResponse;
-import com.cinesphere.main.dto.UserRegisterRequest;
-import com.cinesphere.main.dto.UserRegisterResponse;
+import com.cinesphere.main.dto.ApiResponseDTO;
+import com.cinesphere.main.dto.LoginRequestDTO;
+import com.cinesphere.main.dto.LoginResponseDTO;
+import com.cinesphere.main.dto.UserRegisterRequestDTO;
+import com.cinesphere.main.dto.UserRegisterResponseDTO;
 import com.cinesphere.main.service.impl.AuthServiceImpl;
 import com.cinesphere.main.service.impl.UserServiceImpl;
+
+import jakarta.validation.Valid;
 
 @RestController
 @RequestMapping("/api/auth")
@@ -29,11 +31,11 @@ public class AuthController {
 	}
 
 	@PostMapping("/login")
-	public ResponseEntity<ApiResponse<LoginResponse>> login(@RequestBody LoginRequest request) {
+	public ResponseEntity<ApiResponseDTO<LoginResponseDTO>> login(@Valid @RequestBody LoginRequestDTO request) {
 		System.out.println("Email : " + request.getEmail() + " Password : " + request.getPassword());
-		LoginResponse loginResponse = authService.login(request);
+		LoginResponseDTO loginResponse = authService.login(request);
 
-		return ResponseEntity.ok(new ApiResponse<>(true, "Login Successful", loginResponse));
+		return ResponseEntity.ok(new ApiResponseDTO<>(true, "Login Successful", loginResponse));
 	}
 
 	@GetMapping("/test")
@@ -42,10 +44,10 @@ public class AuthController {
 	}
 
 	@PostMapping("/register")
-	public ResponseEntity<ApiResponse<UserRegisterResponse>> register(@RequestBody UserRegisterRequest request) {
+	public ResponseEntity<ApiResponseDTO<UserRegisterResponseDTO>> register(@Valid @RequestBody UserRegisterRequestDTO request) {
 
 		userService.registerUser(request);
 		return ResponseEntity.status(HttpStatus.CREATED)
-				.body(new ApiResponse<>(true, "User Rregistered Successfully", null));
+				.body(new ApiResponseDTO<>(true, "User Rregistered Successfully", null));
 	}
 }
